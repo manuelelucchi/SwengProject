@@ -46,3 +46,5 @@ buildNumber.properties
 .settings/
 
 bin/
+
+*.db
