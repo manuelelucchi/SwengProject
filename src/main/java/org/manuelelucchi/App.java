@@ -36,7 +36,7 @@ public class App extends Application {
             // if you need to create the 'accounts' table make this call
             TableUtils.createTable(connectionSource, User.class);
 
-            User account = new User("John", "Smith");
+            User account = new User("John", "Smith", "password", true);
 
             // persist the account object to the database
             accountDao.create(account);

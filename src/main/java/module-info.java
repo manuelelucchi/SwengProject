@@ -8,6 +8,8 @@ module org.openjfx {
 
     exports org.manuelelucchi;
     exports org.manuelelucchi.domain;
+    exports org.manuelelucchi.data;
 
     opens org.manuelelucchi.domain;
+    opens org.manuelelucchi.data;
 }
