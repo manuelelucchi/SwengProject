@@ -1,5 +1,6 @@
 package org.manuelelucchi.domain;
 
+import java.util.Date;
 import java.util.Random;
 
 import com.j256.ormlite.field.DatabaseField;
@@ -35,6 +36,17 @@ public class Card {
 
     public void setContent(double content) {
         this.content = content;
+    }
+
+    @DatabaseField(columnName = "expirDate")
+    private Date expireDate;
+
+    public Date getExpireDate() {
+        return expireDate;
+    }
+
+    public void setExpireDate(Date expireDate) {
+        this.expireDate = expireDate;
     }
 
     public boolean canPay(double amount) {

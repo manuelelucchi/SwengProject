@@ -15,6 +15,7 @@ import com.j256.ormlite.jdbc.JdbcConnectionSource;
 import com.j256.ormlite.support.ConnectionSource;
 import com.j256.ormlite.table.TableUtils;
 
+import org.manuelelucchi.data.DbManager;
 import org.manuelelucchi.domain.User;
 
 /**
@@ -23,37 +24,38 @@ import org.manuelelucchi.domain.User;
 public class App extends Application {
 
     void test() {
-        try {
+        var db = DbManager.getInstance();
 
-            // this uses h2 but you can change it to match your database
-            String databaseUrl = "jdbc:sqlite:test.db";
-            // create a connection source to our database
-            ConnectionSource connectionSource = new JdbcConnectionSource(databaseUrl);
-
-            // instantiate the DAO to handle Account with String id
-            Dao<User, String> accountDao = DaoManager.createDao(connectionSource, User.class);
-
-            // if you need to create the 'accounts' table make this call
-            TableUtils.createTable(connectionSource, User.class);
-
-            User account = new User("John", "Smith", "password", true);
-
-            // persist the account object to the database
-            accountDao.create(account);
-
-            // retrieve the account
-            List<User> users = accountDao.queryForAll();
-            // show its password
-            System.out.println("Query Size: " + users.size());
-
-            // close the connection source
-            connectionSource.close();
-        } catch (SQLException e) {
-
-        } catch (IOException e) {
-
+        if (db.ensureCreated()) {
+            db.test();
+        } else {
+            System.out.println("Errore nella creazione di roba");
         }
 
+        // // this uses h2 but you can change it to match your database
+        // String databaseUrl = "jdbc:sqlite:test.db";
+        // // create a connection source to our database
+        // ConnectionSource connectionSource = new JdbcConnectionSource(databaseUrl);
+
+        // // instantiate the DAO to handle Account with String id
+        // Dao<User, String> accountDao = DaoManager.createDao(connectionSource,
+        // User.class);
+
+        // // if you need to create the 'accounts' table make this call
+        // TableUtils.createTable(connectionSource, User.class);
+
+        // User account = new User("John", "Smith", "password", true);
+
+        // // persist the account object to the database
+        // accountDao.create(account);
+
+        // // retrieve the account
+        // List<User> users = accountDao.queryForAll();
+        // // show its password
+        // System.out.println("Query Size: " + users.size());
+
+        // // close the connection source
+        // connectionSource.close();
     }
 
     @Override
