@@ -10,6 +10,7 @@ module org.openjfx {
     exports org.manuelelucchi;
     exports org.manuelelucchi.models;
     exports org.manuelelucchi.data;
+    exports org.manuelelucchi.controllers;
 
     opens org.manuelelucchi.models;
     opens org.manuelelucchi.data;

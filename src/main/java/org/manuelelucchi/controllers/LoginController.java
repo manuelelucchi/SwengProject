@@ -6,7 +6,7 @@ import javafx.fxml.FXML;
 
 public class LoginController {
     @FXML
-    private void test() throws IOException {
+    public void test() throws IOException {
         System.out.println("Weeee");
     }
 }

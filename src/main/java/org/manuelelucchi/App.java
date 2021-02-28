@@ -36,9 +36,8 @@ public class App extends Application {
         test();
     }
 
-    private static Parent loadView(String fxml) throws IOException {
-        FXMLLoader fxmlLoader = new FXMLLoader(
-                App.class.getResource("/main/java/org/manuelelucchi/views/" + fxml + ".fxml"));
+    private Parent loadView(String fxml) throws IOException {
+        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("views/" + fxml + ".fxml"));
         return fxmlLoader.load();
     }
 
