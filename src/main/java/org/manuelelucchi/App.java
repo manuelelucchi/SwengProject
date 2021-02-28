@@ -17,27 +17,25 @@ import org.manuelelucchi.data.DbManager;
  */
 public class App extends Application {
 
-    void test() {
-        var db = DbManager.getInstance();
-
-        if (db.ensureCreated()) {
-            // db.cre();
-        } else {
-            System.out.println("Errore nella creazione di roba");
-        }
-    }
+    private static Scene scene;
 
     @Override
     public void start(Stage stage) throws IOException {
-        var scene = new Scene(loadView("LoginView"), 640, 480);
+        DbManager db = DbManager.getInstance();
+        db.ensureCreated();
+        // Se fallisce da gestire
+
+        scene = new Scene(loadView("HomeView"), 900, 600);
         stage.setScene(scene);
         stage.show();
-
-        test();
     }
 
-    private Parent loadView(String fxml) throws IOException {
-        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("views/" + fxml + ".fxml"));
+    public static void navigate(String view) throws IOException {
+        scene.setRoot(loadView(view));
+    }
+
+    private static Parent loadView(String view) throws IOException {
+        FXMLLoader fxmlLoader = new FXMLLoader(App.class.getResource("views/" + view + ".fxml"));
         return fxmlLoader.load();
     }
 

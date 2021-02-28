@@ -7,15 +7,16 @@ import org.manuelelucchi.data.DbManager;
 import org.manuelelucchi.models.User;
 
 import javafx.fxml.FXML;
+import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 
-public class LoginController {
-    @FXML
-    public TextField codeField;
-
+public class RegistrationController {
     @FXML
     public PasswordField passwordField;
+
+    @FXML
+    public Label codeLabel;
 
     @FXML
     public void back() throws IOException {
@@ -23,10 +24,12 @@ public class LoginController {
     }
 
     @FXML
-    public void login() throws IOException {
+    public void register() throws IOException {
         DbManager db = DbManager.getInstance();
-        var code = codeField.getText();
         var password = passwordField.getText();
-        User user = db.login(Integer.parseInt(code), password);
+        var isStudent = false;
+        var isAdmin = false;
+        User user = db.register(password, isStudent, isAdmin);
+        codeLabel.setText("Your code: " + user.getCode());
     }
 }
