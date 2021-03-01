@@ -11,8 +11,9 @@
       <Button text="Back" onAction="#back"/>
       <Label text="Registration" />
       <PasswordField fx:id="passwordField"/>
-      <Button text="Register" onAction="#register"/> 
+      <Button fx:id="registerButton" text="Register" onAction="#register"/> 
       <Label fx:id="codeLabel" text=""/>
+      <Button fx:id="nextButton" text="Next" onAction="#next"/>
    </children>
    <padding>
       <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />

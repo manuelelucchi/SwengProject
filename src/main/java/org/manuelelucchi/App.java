@@ -4,12 +4,11 @@ import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Label;
-import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
 
 import java.io.IOException;
 
+import org.manuelelucchi.common.Controller;
 import org.manuelelucchi.data.DbManager;
 
 /**
@@ -18,6 +17,12 @@ import org.manuelelucchi.data.DbManager;
 public class App extends Application {
 
     private static Scene scene;
+
+    private static int totemId;
+
+    public static int getTotemId() {
+        return totemId;
+    }
 
     @Override
     public void start(Stage stage) throws IOException {
@@ -30,13 +35,30 @@ public class App extends Application {
         stage.show();
     }
 
-    public static void navigate(String view) throws IOException {
-        scene.setRoot(loadView(view));
+    public static Parent loadView(String view) throws IOException {
+        FXMLLoader loader = new FXMLLoader(App.class.getResource("views/" + view + ".fxml"));
+        return loader.load();
     }
 
-    private static Parent loadView(String view) throws IOException {
-        FXMLLoader fxmlLoader = new FXMLLoader(App.class.getResource("views/" + view + ".fxml"));
-        return fxmlLoader.load();
+    public static Parent loadView(Controller sender, String view) throws IOException {
+        return loadView(sender, view, null);
+    }
+
+    public static Parent loadView(Controller sender, String view, Object parameter) throws IOException {
+        FXMLLoader loader = new FXMLLoader(App.class.getResource("views/" + view + ".fxml"));
+        Parent parent = loader.load();
+        Controller controller = loader.getController();
+        controller.onNavigateFrom(sender, parameter);
+        return parent;
+    }
+
+    public static void navigate(Controller sender, String view, Object parameter) throws IOException {
+        var parent = loadView(sender, view, parameter);
+        scene.setRoot(parent);
+    }
+
+    public static void navigate(Controller sender, String view) throws IOException {
+        navigate(sender, view, null);
     }
 
     public static void main(String[] args) {

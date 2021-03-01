@@ -3,20 +3,21 @@ package org.manuelelucchi.controllers;
 import java.io.IOException;
 
 import org.manuelelucchi.App;
+import org.manuelelucchi.common.Controller;
 
 import javafx.fxml.FXML;
 
 /**
  * HomeController
  */
-public class HomeController {
+public class HomeController extends Controller {
     @FXML
-    public void login() throws IOException {
-        App.navigate("LoginView");
+    public void login() {
+        navigate("LoginView");
     }
 
     @FXML
-    public void register() throws IOException {
-        App.navigate("RegistrationView");
+    public void register() {
+        navigate("RegistrationView");
     }
 }

@@ -8,6 +8,7 @@ import java.util.stream.Stream;
 
 import com.j256.ormlite.dao.Dao;
 import com.j256.ormlite.dao.DaoManager;
+import com.j256.ormlite.dao.EagerForeignCollection;
 import com.j256.ormlite.jdbc.JdbcConnectionSource;
 import com.j256.ormlite.support.ConnectionSource;
 import com.j256.ormlite.table.TableUtils;
@@ -21,13 +22,13 @@ public class DbManager {
     private static String databaseUrl = "jdbc:sqlite:data.db";
     private ConnectionSource source;
 
-    private Dao<User, String> users;
-    private Dao<Bike, String> bikes;
-    private Dao<Card, String> cards;
-    private Dao<Subscription, String> subscriptions;
-    private Dao<Totem, String> racks;
-    private Dao<Grip, String> grips;
-    private Dao<Rental, String> rentals;
+    private Dao<User, Integer> users;
+    private Dao<Bike, Integer> bikes;
+    private Dao<Card, Integer> cards;
+    private Dao<Subscription, Integer> subscriptions;
+    private Dao<Totem, Integer> totems;
+    private Dao<Grip, Integer> grips;
+    private Dao<Rental, Integer> rentals;
 
     private DbManager() {
     }
@@ -94,7 +95,7 @@ public class DbManager {
 
     public User login(int code, String password) {
         try {
-            var user = users.queryForId(Integer.toString(code));
+            var user = users.queryForId(code);
             return user;
         } catch (SQLException e) {
             return null;
@@ -107,9 +108,7 @@ public class DbManager {
             // Check credit card
 
             Card card = new Card(cardCode, cardExpireDate);
-
             var subscription = new Subscription(user, card, type);
-            card.getSubscriptions().add(subscription);
             user.setSubscription(subscription);
 
             if (type == SubscriptionType.year) {
@@ -118,6 +117,7 @@ public class DbManager {
 
             subscriptions.create(subscription);
             users.update(user);
+            cards.create(card);
 
             return subscription;
         } catch (SQLException e) {
@@ -125,11 +125,15 @@ public class DbManager {
         }
     }
 
-    public Grip unlockBike(Totem totem, User user, BikeType type) {
+    public Grip unlockBike(int totemId, User user, BikeType type) {
         try {
             Subscription sub = user.getSubscription();
             if (sub.getType() == SubscriptionType.day || sub.getType() == SubscriptionType.week && !user.isAdmin()) {
                 sub.activate();
+            }
+            var totem = totems.queryForId(totemId);
+            if (totem == null) {
+                // Panic
             }
             var grips = totem.getGrips();
             var maybeGrip = grips.stream().filter(x -> x.getType() == type && x.getBike() != null).findFirst();

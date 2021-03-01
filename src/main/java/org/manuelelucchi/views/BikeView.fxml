@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.control.PasswordField?>
+<?import javafx.geometry.Insets?>
+
+<VBox alignment="CENTER" spacing="20.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.manuelelucchi.controllers.BikeController">
+   <children>
+      <HBox>
+        <children>
+            <Button fx:id="standardButton" text="Standard" onAction="#standardBike"/>
+            <Button fx:id="electricButton" text="Electric" onAction="#electricBike"/>
+            <Button fx:id="electricSeatButton" text="Electric with Child Seat" onAction="#electricSeatBike"/>
+        </children>
+      </HBox>
+      <Label fx:id="bikePositionLabel"/>
+      <Button fx:id="okButton" onAction="#ok"/>
+   </children>
+   <padding>
+      <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
+   </padding>
+</VBox>
