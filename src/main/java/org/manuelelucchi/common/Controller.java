@@ -5,6 +5,10 @@ import java.io.IOException;
 import org.manuelelucchi.App;
 
 public abstract class Controller {
+    public void init() {
+
+    }
+
     public void onNavigateFrom(Controller sender, Object parameter) {
 
     }

@@ -14,8 +14,8 @@ public class Rental {
 
     }
 
-    public Rental(User user, Bike bike) {
-        this.user = user;
+    public Rental(Subscription subscription, Bike bike) {
+        this.subscription = subscription;
         this.bike = bike;
         start = DateUtils.now();
     }
@@ -53,9 +53,9 @@ public class Rental {
     }
 
     @DatabaseField(foreign = true)
-    private User user;
+    private Subscription subscription;
 
-    public User getUser() {
-        return user;
+    public Subscription getSubscription() {
+        return subscription;
     }
 }

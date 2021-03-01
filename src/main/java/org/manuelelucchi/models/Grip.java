@@ -9,9 +9,10 @@ public class Grip {
 
     }
 
-    public Grip(BikeType type, int position) {
+    public Grip(Totem totem, BikeType type, int position) {
         this.type = type;
         this.position = position;
+        this.totem = totem;
     }
 
     @DatabaseField(generatedId = true)
@@ -44,5 +45,12 @@ public class Grip {
 
     public void setBike(Bike bike) {
         this.bike = bike;
+    }
+
+    @DatabaseField(foreign = true)
+    private Totem totem;
+
+    public Totem getTotem() {
+        return totem;
     }
 }

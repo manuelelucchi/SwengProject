@@ -6,6 +6,7 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 
+import java.io.File;
 import java.io.IOException;
 
 import org.manuelelucchi.common.Controller;
@@ -18,7 +19,7 @@ public class App extends Application {
 
     private static Scene scene;
 
-    private static int totemId;
+    private static int totemId = 1;
 
     public static int getTotemId() {
         return totemId;
@@ -27,11 +28,15 @@ public class App extends Application {
     @Override
     public void start(Stage stage) throws IOException {
         DbManager db = DbManager.getInstance();
+        File file = new File("./data.db");
+        file.delete();
+
         db.ensureCreated();
         // Se fallisce da gestire
 
-        scene = new Scene(loadView("HomeView"), 900, 600);
+        scene = new Scene(loadView("HomeView"), 1280, 720);
         stage.setScene(scene);
+        stage.setTitle("Bike Sharing");
         stage.show();
     }
 
@@ -49,6 +54,7 @@ public class App extends Application {
         Parent parent = loader.load();
         Controller controller = loader.getController();
         controller.onNavigateFrom(sender, parameter);
+        controller.init();
         return parent;
     }
 

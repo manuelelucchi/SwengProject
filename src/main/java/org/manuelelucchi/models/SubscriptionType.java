@@ -1,5 +1,5 @@
 package org.manuelelucchi.models;
 
 public enum SubscriptionType {
-    day, week, year
+    day, week, year, admin
 }

@@ -6,7 +6,7 @@ import org.manuelelucchi.common.Controller;
 import org.manuelelucchi.data.DbManager;
 import org.manuelelucchi.models.BikeType;
 import org.manuelelucchi.models.Grip;
-import org.manuelelucchi.models.User;
+import org.manuelelucchi.models.Subscription;
 
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
@@ -16,7 +16,7 @@ import javafx.scene.control.Label;
  * BikeController
  */
 public class BikeController extends Controller {
-    private User user;
+    private Subscription subscription;
     private DbManager db;
 
     @FXML
@@ -36,7 +36,7 @@ public class BikeController extends Controller {
 
     @Override
     public void onNavigateFrom(Controller sender, Object parameter) {
-        this.user = (User) parameter;
+        this.subscription = (Subscription) parameter;
         this.db = DbManager.getInstance();
         this.okButton.setVisible(false);
     }
@@ -44,21 +44,21 @@ public class BikeController extends Controller {
     @FXML
     public void standardBike() {
         disableAll();
-        Grip grip = db.unlockBike(getTotemId(), user, BikeType.standard);
+        Grip grip = db.unlockBike(getTotemId(), subscription, BikeType.standard);
         execute(grip);
     }
 
     @FXML
     public void electricBike() {
         disableAll();
-        Grip grip = db.unlockBike(getTotemId(), user, BikeType.electric);
+        Grip grip = db.unlockBike(getTotemId(), subscription, BikeType.electric);
         execute(grip);
     }
 
     @FXML
     public void electricSeatBike() {
         disableAll();
-        Grip grip = db.unlockBike(getTotemId(), user, BikeType.electricBabySeat);
+        Grip grip = db.unlockBike(getTotemId(), subscription, BikeType.electricBabySeat);
         execute(grip);
     }
 
@@ -69,14 +69,14 @@ public class BikeController extends Controller {
 
     public void enableAll() {
         standardButton.setDisable(false);
-        standardButton.setDisable(false);
-        standardButton.setDisable(false);
+        electricButton.setDisable(false);
+        electricSeatButton.setDisable(false);
     }
 
     public void disableAll() {
         standardButton.setDisable(true);
-        standardButton.setDisable(true);
-        standardButton.setDisable(true);
+        electricButton.setDisable(true);
+        electricSeatButton.setDisable(true);
     }
 
     private void execute(Grip grip) {

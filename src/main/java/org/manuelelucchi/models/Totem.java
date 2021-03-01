@@ -15,7 +15,7 @@ public class Totem {
         this.address = address;
     }
 
-    @DatabaseField
+    @DatabaseField(generatedId = true)
     private int id;
 
     public int getId() {

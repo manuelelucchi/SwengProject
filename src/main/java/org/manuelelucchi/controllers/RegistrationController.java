@@ -1,62 +1,107 @@
 package org.manuelelucchi.controllers;
 
 import java.io.IOException;
+import java.time.ZoneId;
+import java.util.Date;
 
 import org.manuelelucchi.App;
 import org.manuelelucchi.common.Controller;
 import org.manuelelucchi.data.DbManager;
-import org.manuelelucchi.models.User;
+import org.manuelelucchi.models.Subscription;
+import org.manuelelucchi.models.SubscriptionType;
 
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
+import javafx.scene.control.CheckBox;
+import javafx.scene.control.DatePicker;
 import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
+import javafx.scene.control.TextField;
 
 public class RegistrationController extends Controller {
     @FXML
     public PasswordField passwordField;
 
     @FXML
-    public Label codeLabel;
-
-    @FXML
-    public Button nextButton;
-
-    @FXML
     public Button registerButton;
 
-    private User currentUser;
+    @FXML
+    public TextField codeField;
 
-    @Override
-    public void onNavigateFrom(Controller sender, Object parameter) {
-        nextButton.setVisible(false);
-    }
+    @FXML
+    public DatePicker expireDatePicker;
+
+    @FXML
+    public CheckBox dayBox;
+
+    @FXML
+    public CheckBox weekBox;
+
+    @FXML
+    public CheckBox yearBox;
+
+    @FXML
+    public CheckBox studentBox;
 
     @FXML
     public void back() {
         navigate("HomeView");
     }
 
-    // STUDENT DA GESTIRE
+    @Override
+    public void init() {
+        dayBox.setSelected(true);
+
+        dayBox.selectedProperty().addListener(new ChangeListener<Boolean>() {
+            @Override
+            public void changed(ObservableValue<? extends Boolean> arg0, Boolean arg1, Boolean arg2) {
+                weekBox.setSelected(false);
+                yearBox.setSelected(false);
+                dayBox.setSelected(arg2);
+            }
+        });
+
+        weekBox.selectedProperty().addListener(new ChangeListener<Boolean>() {
+            @Override
+            public void changed(ObservableValue<? extends Boolean> arg0, Boolean arg1, Boolean arg2) {
+                dayBox.setSelected(false);
+                yearBox.setSelected(false);
+                weekBox.setSelected(arg2);
+            }
+        });
+
+        yearBox.selectedProperty().addListener(new ChangeListener<Boolean>() {
+            @Override
+            public void changed(ObservableValue<? extends Boolean> arg0, Boolean arg1, Boolean arg2) {
+                dayBox.setSelected(false);
+                weekBox.setSelected(false);
+                yearBox.setSelected(arg2);
+            }
+        });
+    }
+
+    public SubscriptionType getSubscriptionType() {
+        var type = dayBox.isSelected() ? SubscriptionType.day : null;
+        type = weekBox.isSelected() ? SubscriptionType.week : type;
+        type = yearBox.isSelected() ? SubscriptionType.year : type;
+        return type;
+    }
+
     @FXML
     public void register() {
         DbManager db = DbManager.getInstance();
         var password = passwordField.getText();
-        var isStudent = false;
-        var isAdmin = false;
-        User user = db.register(password, isStudent, isAdmin);
-        if (user != null) {
-            codeLabel.setText("Your code: " + user.getCode());
-            registerButton.setDisable(true);
-            nextButton.setVisible(true);
-            currentUser = user;
+        var type = getSubscriptionType();
+        var isStudent = studentBox.isSelected();
+        var cardCode = Integer.parseInt(codeField.getText());
+        Date cardExpireDate = Date.from(expireDatePicker.getValue().atStartOfDay(ZoneId.systemDefault()).toInstant());
+        Subscription subscription = db.register(password, type, isStudent, cardCode, cardExpireDate);
+        if (subscription != null) {
+            navigate("CodeView", subscription);
         } else {
             // Errore
         }
-    }
-
-    @FXML
-    public void next() {
-        navigate("SubscriptionView", currentUser);
     }
 }

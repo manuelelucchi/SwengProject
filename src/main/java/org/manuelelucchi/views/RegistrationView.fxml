@@ -1,19 +1,39 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.scene.layout.VBox?>
+<?import javafx.scene.layout.HBox?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.Button?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.PasswordField?>
+<?import javafx.scene.control.DatePicker?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.control.CheckBox?>
 
 <VBox alignment="CENTER" spacing="20.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.manuelelucchi.controllers.RegistrationController">
    <children>
       <Button text="Back" onAction="#back"/>
       <Label text="Registration" />
+      <Label text="Insert Password" />
       <PasswordField fx:id="passwordField"/>
+      <Label text="Insert a valid Card Code"/>
+      <TextField fx:id="codeField"/>
+      <Label text="Insert the card expiration Date"/>
+      <DatePicker fx:id="expireDatePicker"/>
+      <Label text="Select the subscription type"/>
+      <HBox spacing="10.0" alignment="CENTER">
+         <children>
+            <Label text="Day"/>
+            <CheckBox fx:id="dayBox"/>
+            <Label text="Week"/>
+            <CheckBox fx:id="weekBox"/>
+            <Label text="Year"/>
+            <CheckBox fx:id="yearBox"/>
+         </children>
+      </HBox>      
+      <Label text="Are you a student?"/>
+      <CheckBox fx:id="studentBox"/>
       <Button fx:id="registerButton" text="Register" onAction="#register"/> 
-      <Label fx:id="codeLabel" text=""/>
-      <Button fx:id="nextButton" text="Next" onAction="#next"/>
    </children>
    <padding>
       <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />

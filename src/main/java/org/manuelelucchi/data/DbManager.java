@@ -22,7 +22,6 @@ public class DbManager {
     private static String databaseUrl = "jdbc:sqlite:data.db";
     private ConnectionSource source;
 
-    private Dao<User, Integer> users;
     private Dao<Bike, Integer> bikes;
     private Dao<Card, Integer> cards;
     private Dao<Subscription, Integer> subscriptions;
@@ -48,16 +47,18 @@ public class DbManager {
             TableUtils.createTableIfNotExists(source, Card.class);
             TableUtils.createTableIfNotExists(source, Subscription.class);
             TableUtils.createTableIfNotExists(source, Bike.class);
-            TableUtils.createTableIfNotExists(source, User.class);
             TableUtils.createTableIfNotExists(source, Grip.class);
             TableUtils.createTableIfNotExists(source, Rental.class);
+            TableUtils.createTableIfNotExists(source, Totem.class);
 
             cards = DaoManager.createDao(source, Card.class);
             subscriptions = DaoManager.createDao(source, Subscription.class);
             bikes = DaoManager.createDao(source, Bike.class);
-            users = DaoManager.createDao(source, User.class);
             grips = DaoManager.createDao(source, Grip.class);
             rentals = DaoManager.createDao(source, Rental.class);
+            totems = DaoManager.createDao(source, Totem.class);
+
+            createFakeData();
 
             return true;
         } catch (SQLException e) {
@@ -83,41 +84,19 @@ public class DbManager {
         }
     }
 
-    public User register(String password, boolean isStudent, boolean isAdmin) {
+    public Subscription register(String password, SubscriptionType type, boolean isStudent, int cardCode,
+            Date cardExpireDate) {
         try {
-            var user = new User(password, isStudent, isAdmin);
-            users.create(user);
-            return user;
-        } catch (SQLException e) {
-            return null;
-        }
-    }
-
-    public User login(int code, String password) {
-        try {
-            var user = users.queryForId(code);
-            return user;
-        } catch (SQLException e) {
-            return null;
-        }
-    }
-
-    // Valutare transazioni
-    public Subscription createSubscription(User user, SubscriptionType type, int cardCode, Date cardExpireDate) {
-        try {
-            // Check credit card
-
+            Subscription subscription = new Subscription(password, type, isStudent);
             Card card = new Card(cardCode, cardExpireDate);
-            var subscription = new Subscription(user, card, type);
-            user.setSubscription(subscription);
 
+            subscription.setCard(card);
             if (type == SubscriptionType.year) {
                 subscription.activate();
             }
 
             subscriptions.create(subscription);
-            users.update(user);
-            cards.create(card);
+            cards.createIfNotExists(card);
 
             return subscription;
         } catch (SQLException e) {
@@ -125,12 +104,27 @@ public class DbManager {
         }
     }
 
-    public Grip unlockBike(int totemId, User user, BikeType type) {
+    public Subscription login(int code, String password) {
         try {
-            Subscription sub = user.getSubscription();
-            if (sub.getType() == SubscriptionType.day || sub.getType() == SubscriptionType.week && !user.isAdmin()) {
-                sub.activate();
+            var subscription = subscriptions.queryForId(code);
+            // Check password
+            return subscription;
+        } catch (SQLException e) {
+            return null;
+        }
+    }
+
+    public Grip unlockBike(int totemId, Subscription subscription, BikeType type) {
+        try {
+
+            if (!subscription.isAdmin()) {
+                if (subscription.getType() == SubscriptionType.day
+                        || subscription.getType() == SubscriptionType.week && !subscription.isAdmin()) {
+                    subscription.activate();
+                }
+                subscriptions.update(subscription);
             }
+
             var totem = totems.queryForId(totemId);
             if (totem == null) {
                 // Panic
@@ -143,9 +137,8 @@ public class DbManager {
             var grip = maybeGrip.get();
             var bike = grip.getBike();
 
-            Rental rental = new Rental(user, bike);
+            Rental rental = new Rental(subscription, bike);
             rentals.create(rental);
-            subscriptions.update(sub);
 
             // Invia segnale a controllore di aprire la morsa
 
@@ -171,7 +164,7 @@ public class DbManager {
     public boolean returnBike(Grip grip, Bike bike) {
         try {
             Rental rental = bike.getRentals().stream().filter(x -> x.getEnd() == null).findFirst().get();
-            User user = rental.getUser();
+            Subscription subscription = rental.getSubscription();
 
             Date start = rental.getStart();
             Date end = DateUtils.now();
@@ -183,15 +176,13 @@ public class DbManager {
             rental.setEnd(end);
 
             rentals.update(rental);
-            users.update(user);
+            subscriptions.update(subscription);
             bikes.update(bike);
             grips.update(grip);
 
             var duration = DateUtils.sub(start, end);
 
-            var amount = payAmount(user, bike, duration);
-
-            Subscription subscription = user.getSubscription();
+            var amount = payAmount(subscription, bike, duration);
 
             var card = subscription.getCard();
 
@@ -203,9 +194,7 @@ public class DbManager {
         }
     }
 
-    public double payAmount(User user, Bike bike, Duration duration) {
-        var subscription = user.getSubscription();
-
+    public double payAmount(Subscription subscription, Bike bike, Duration duration) {
         var minutes = duration.toMinutes();
         var halfHours = minutes / 30 + (minutes % 30 > 0 ? 1 : 0);
 
@@ -217,7 +206,7 @@ public class DbManager {
             int exceeds = subscription.getNumberOfExceed();
             exceeds += 1;
             if (exceeds == 3) {
-                terminateSubscription(user, subscription);
+                terminateSubscription(subscription);
             } else {
                 subscription.setNumberOfExceed(exceeds);
             }
@@ -228,12 +217,12 @@ public class DbManager {
         return toPay;
     }
 
-    public void terminateSubscription(User user, Subscription subscription) {
+    public void terminateSubscription(Subscription subscription) {
 
     }
 
-    public boolean checkReturn(User user) {
-        return user.getRentals().stream().allMatch(x -> x.getEnd() != null);
+    public boolean checkReturn(Subscription subscription) {
+        return subscription.getRentals().stream().allMatch(x -> x.getEnd() != null);
     }
 
     public boolean setBroken(Bike bike) {
@@ -252,5 +241,61 @@ public class DbManager {
 
     public Grip mostUsedRack() {
         return null;
+    }
+
+    public void createFakeData() throws SQLException {
+
+        Totem t1 = new Totem("Via Adios 14");
+        Totem t2 = new Totem("Via Vamos 12");
+
+        totems.create(t1);
+        totems.create(t2);
+
+        Grip g11 = new Grip(t1, BikeType.standard, 0);
+        Grip g12 = new Grip(t1, BikeType.electric, 1);
+        Grip g13 = new Grip(t1, BikeType.electricBabySeat, 2);
+
+        Grip g21 = new Grip(t2, BikeType.standard, 0);
+        Grip g22 = new Grip(t2, BikeType.electric, 1);
+        Grip g23 = new Grip(t2, BikeType.electricBabySeat, 2);
+
+        Bike b1 = new Bike(BikeType.standard);
+        Bike b2 = new Bike(BikeType.electric);
+        Bike b3 = new Bike(BikeType.electricBabySeat);
+
+        bikes.create(b1);
+        bikes.create(b2);
+        bikes.create(b3);
+
+        grips.create(g11);
+        grips.create(g12);
+        grips.create(g13);
+        grips.create(g21);
+        grips.create(g22);
+        grips.create(g23);
+
+        g11.setBike(b1);
+        g12.setBike(b2);
+        g13.setBike(b3);
+
+        b1.setGrip(g11);
+        b2.setGrip(g12);
+        b3.setGrip(g13);
+
+        grips.update(g11);
+        grips.update(g12);
+        grips.update(g13);
+
+        bikes.update(b1);
+        bikes.update(b2);
+        bikes.update(b3);
+
+        Subscription admin = new Subscription("admin", SubscriptionType.admin, false);
+        Subscription normal = new Subscription("normal", SubscriptionType.week, false);
+        Subscription student = new Subscription("student", SubscriptionType.week, true);
+
+        subscriptions.create(admin);
+        subscriptions.create(normal);
+        subscriptions.create(student);
     }
 }

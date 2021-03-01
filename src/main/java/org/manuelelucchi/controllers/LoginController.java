@@ -5,7 +5,7 @@ import java.io.IOException;
 import org.manuelelucchi.App;
 import org.manuelelucchi.common.Controller;
 import org.manuelelucchi.data.DbManager;
-import org.manuelelucchi.models.User;
+import org.manuelelucchi.models.Subscription;
 
 import javafx.fxml.FXML;
 import javafx.scene.control.PasswordField;
@@ -28,15 +28,16 @@ public class LoginController extends Controller {
         DbManager db = DbManager.getInstance();
         var code = codeField.getText();
         var password = passwordField.getText();
-        User user = db.login(Integer.parseInt(code), password);
-        if (user == null) {
+        Subscription subscription = db.login(Integer.parseInt(code), password);
+        if (subscription == null) {
 
         } else {
-            var subscription = user.getSubscription();
-            if (subscription == null || subscription.isExpired()) {
-                navigate("SubscriptionView", user);
+            if (subscription.isAdmin()) {
+                navigate("BikeView", subscription);
+            } else if (subscription.isExpired()) {
+                navigate("RegisterView", subscription);
             } else {
-                navigate("BikeView", user);
+                navigate("BikeView", subscription);
             }
         }
     }
