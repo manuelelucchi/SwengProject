@@ -3,6 +3,8 @@ package org.manuelelucchi.common;
 import java.io.IOException;
 
 import org.manuelelucchi.App;
+import org.manuelelucchi.data.DbManager;
+import org.manuelelucchi.models.Totem;
 
 public abstract class Controller {
     public void init() {

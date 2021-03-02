@@ -59,7 +59,7 @@ public class RegistrationController extends Controller {
             public void changed(ObservableValue<? extends Boolean> arg0, Boolean arg1, Boolean arg2) {
                 weekBox.setSelected(false);
                 yearBox.setSelected(false);
-                dayBox.setSelected(arg2);
+                dayBox.setSelected(true);
             }
         });
 
@@ -68,7 +68,7 @@ public class RegistrationController extends Controller {
             public void changed(ObservableValue<? extends Boolean> arg0, Boolean arg1, Boolean arg2) {
                 dayBox.setSelected(false);
                 yearBox.setSelected(false);
-                weekBox.setSelected(arg2);
+                weekBox.setSelected(true);
             }
         });
 
@@ -77,7 +77,7 @@ public class RegistrationController extends Controller {
             public void changed(ObservableValue<? extends Boolean> arg0, Boolean arg1, Boolean arg2) {
                 dayBox.setSelected(false);
                 weekBox.setSelected(false);
-                yearBox.setSelected(arg2);
+                yearBox.setSelected(true);
             }
         });
     }

@@ -225,8 +225,11 @@ public class DbManager {
         return subscription.getRentals().stream().allMatch(x -> x.getEnd() != null);
     }
 
-    public boolean setBroken(Bike bike) {
+    public boolean reportBroken(int code) {
         try {
+            var bike = bikes.queryForId(code);
+            if (bike == null)
+                return false;
             bike.setBroken(true);
             bikes.update(bike);
             return true;
@@ -235,12 +238,20 @@ public class DbManager {
         }
     }
 
-    public int numberOfBikesUsedPerDay() {
+    public int meanBikesUsed() {
         return 0;
     }
 
-    public Grip mostUsedRack() {
-        return null;
+    public Totem mostUsedTotem() {
+        try {
+            return totems.queryForId(1);
+        } catch (SQLException e) {
+            return null;
+        }
+    }
+
+    public int mostUsedTime() {
+        return 0;
     }
 
     public void createFakeData() throws SQLException {
