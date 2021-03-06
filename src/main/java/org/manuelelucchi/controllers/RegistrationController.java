@@ -1,6 +1,7 @@
 package org.manuelelucchi.controllers;
 
 import java.io.IOException;
+import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.Date;
 
@@ -12,13 +13,16 @@ import org.manuelelucchi.models.SubscriptionType;
 
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
+import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
+import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
+import javafx.util.StringConverter;
 
 public class RegistrationController extends Controller {
     @FXML
@@ -34,16 +38,13 @@ public class RegistrationController extends Controller {
     public DatePicker expireDatePicker;
 
     @FXML
-    public CheckBox dayBox;
-
-    @FXML
-    public CheckBox weekBox;
-
-    @FXML
-    public CheckBox yearBox;
+    public ChoiceBox<SubscriptionType> typeBox;
 
     @FXML
     public CheckBox studentBox;
+
+    @FXML
+    public Label priceLabel;
 
     @FXML
     public void back() {
@@ -52,48 +53,71 @@ public class RegistrationController extends Controller {
 
     @Override
     public void init() {
-        dayBox.setSelected(true);
-
-        dayBox.selectedProperty().addListener(new ChangeListener<Boolean>() {
+        typeBox.getItems().addAll(SubscriptionType.year, SubscriptionType.week, SubscriptionType.day);
+        typeBox.setConverter(new StringConverter<SubscriptionType>() {
             @Override
-            public void changed(ObservableValue<? extends Boolean> arg0, Boolean arg1, Boolean arg2) {
-                weekBox.setSelected(false);
-                yearBox.setSelected(false);
-                dayBox.setSelected(true);
+            public String toString(SubscriptionType l) {
+                switch (l) {
+                case day:
+                    return "Day (€4,50)";
+                case week:
+                    return "Week (€9,00)";
+                case year:
+                    return "Year (€36,00)";
+                default:
+                    return "";
+                }
+            }
+
+            @Override
+            public SubscriptionType fromString(String language) {
+                throw new IllegalAccessError();
             }
         });
 
-        weekBox.selectedProperty().addListener(new ChangeListener<Boolean>() {
-            @Override
-            public void changed(ObservableValue<? extends Boolean> arg0, Boolean arg1, Boolean arg2) {
-                dayBox.setSelected(false);
-                yearBox.setSelected(false);
-                weekBox.setSelected(true);
-            }
-        });
+        expireDatePicker.setValue(LocalDate.now());
 
-        yearBox.selectedProperty().addListener(new ChangeListener<Boolean>() {
+        typeBox.getSelectionModel().selectFirst();
+
+        studentBox.selectedProperty().addListener(new ChangeListener<Boolean>() {
             @Override
             public void changed(ObservableValue<? extends Boolean> arg0, Boolean arg1, Boolean arg2) {
-                dayBox.setSelected(false);
-                weekBox.setSelected(false);
-                yearBox.setSelected(true);
+                updatePrice();
             }
         });
     }
 
-    public SubscriptionType getSubscriptionType() {
-        var type = dayBox.isSelected() ? SubscriptionType.day : null;
-        type = weekBox.isSelected() ? SubscriptionType.week : type;
-        type = yearBox.isSelected() ? SubscriptionType.year : type;
-        return type;
+    public void updatePrice() {
+        var type = typeBox.getSelectionModel().getSelectedItem();
+        double price = 0;
+        if (studentBox.isSelected()) {
+            price = 0;
+        } else {
+            switch (type) {
+            case day:
+                price = 4.5;
+                break;
+            case week:
+                price = 9;
+                break;
+            case year:
+                price = 36;
+                break;
+            }
+        }
+        priceLabel.setText("Current Total: " + price + "€");
+    }
+
+    @FXML
+    public void typeBoxChanged() {
+        updatePrice();
     }
 
     @FXML
     public void register() {
         DbManager db = DbManager.getInstance();
         var password = passwordField.getText();
-        var type = getSubscriptionType();
+        var type = typeBox.getSelectionModel().getSelectedItem();
         var isStudent = studentBox.isSelected();
         var cardCode = Integer.parseInt(codeField.getText());
         Date cardExpireDate = Date.from(expireDatePicker.getValue().atStartOfDay(ZoneId.systemDefault()).toInstant());

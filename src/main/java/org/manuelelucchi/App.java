@@ -37,6 +37,8 @@ public class App extends Application {
         scene = new Scene(loadView("HomeView"), 1280, 720);
         stage.setScene(scene);
         stage.setTitle("Bike Sharing");
+        stage.setMinWidth(900);
+        stage.setMinHeight(600);
         stage.show();
     }
 

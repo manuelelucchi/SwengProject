@@ -70,16 +70,16 @@ public class Bike {
             }
         } else {
             switch ((int) halfHours) {
-                case 1:
-                    return 0.25;
-                case 2:
-                    return 0.50;
-                case 3:
-                    return 1;
-                case 4:
-                    return 2;
-                default:
-                    return 4 * (halfHours - 4) + 2;
+            case 1:
+                return 0.25;
+            case 2:
+                return 0.50;
+            case 3:
+                return 1;
+            case 4:
+                return 2;
+            default:
+                return 4 * (halfHours - 4) + 2;
             }
         }
     }

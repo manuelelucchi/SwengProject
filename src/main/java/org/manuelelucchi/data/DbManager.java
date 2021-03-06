@@ -95,6 +95,8 @@ public class DbManager {
                 subscription.activate();
             }
 
+            // card.pay(amount)
+
             subscriptions.create(subscription);
             cards.createIfNotExists(card);
 
@@ -148,8 +150,11 @@ public class DbManager {
         }
     }
 
-    public boolean bikeRemoved(Grip grip, Bike bike) {
+    public boolean bikeRemoved(int gripId) {
         try {
+            Grip grip = grips.queryForId(gripId);
+            var bike = grip.getBike();
+
             bike.setGrip(null);
             grip.setBike(null);
 
@@ -159,6 +164,15 @@ public class DbManager {
         } catch (SQLException e) {
             return false;
         }
+    }
+
+    public boolean bikeNotRemoved(int gripId) {
+        return true;
+    }
+
+    public boolean blockGrip(Grip grip) {
+        // Simulated
+        return true;
     }
 
     public boolean returnBike(Grip grip, Bike bike) {

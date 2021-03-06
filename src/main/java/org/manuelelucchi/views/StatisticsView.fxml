@@ -28,14 +28,32 @@
       AnchorPane.topAnchor = "0.0"
       AnchorPane.bottomAnchor = "0.0">
       <children>
-         <Label fx:id="meanBike"/>
-         <Label fx:id="maxTotem"/>
-         <Label fx:id="maxTime"/>
+         <Label fx:id="meanBike">
+            <font>
+               <Font size="20.0"/>
+            </font>
+         </Label>
+         <Label fx:id="maxTotem">
+            <font>
+               <Font size="20.0"/>
+            </font>
+         </Label>
+         <Label fx:id="maxTime">
+            <font>
+               <Font size="20.0"/>
+            </font>
+         </Label>
       </children>
    </VBox>
 
    <Button text="Back" 
-      onAction="#back"
-      AnchorPane.topAnchor = "20.0"
-      AnchorPane.leftAnchor = "20.0"/>
+         onAction="#back"
+         AnchorPane.leftAnchor="20.0"
+         AnchorPane.topAnchor="20.0"
+         prefWidth="60"
+         prefHeight="20">
+         <font>
+            <Font size="15.0"/>
+         </font>
+      </Button>
 </AnchorPane>

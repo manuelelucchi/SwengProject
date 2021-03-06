@@ -26,13 +26,37 @@
          AnchorPane.topAnchor="0.0"
          AnchorPane.bottomAnchor="0.0"
          spacing="10.0">
-         <Label text="Insert the bike code"/>
-         <TextField fx:id="numberField"/>
-         <Button text="Report" onAction="#report"/>
+         <Label text="Insert the bike code">
+            <font>
+               <Font size="20.0"/>
+            </font>
+         </Label>
+         <TextField fx:id="numberField" 
+            maxWidth="250"
+            prefHeight="40">
+            <font>
+               <Font size="20.0"/>
+            </font>
+         </TextField>
+         <Button text="Report" 
+            onAction="#report"
+            prefHeight="50"
+            prefWidth="100">
+            <font>
+               <Font size="20.0"/>
+            </font>
+         </Button>
          <Label fx:id="responseLabel"/>
       </VBox>
-      <Button text="Back" onAction="#back"
+      <Button text="Back" 
+         onAction="#back"
          AnchorPane.leftAnchor="20.0"
-         AnchorPane.topAnchor="20.0"/>
+         AnchorPane.topAnchor="20.0"
+         prefWidth="60"
+         prefHeight="20">
+         <font>
+            <Font size="15.0"/>
+         </font>
+      </Button>
    </children>
 </AnchorPane>

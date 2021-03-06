@@ -12,9 +12,6 @@ public class CodeController extends Controller {
     @FXML
     public Label codeLabel;
 
-    @FXML
-    public Button nextButton;
-
     private Subscription subscription;
 
     @Override
@@ -32,4 +29,8 @@ public class CodeController extends Controller {
         navigate("BikeView", subscription);
     }
 
+    @FXML
+    public void home() {
+        navigate("HomeView");
+    }
 }

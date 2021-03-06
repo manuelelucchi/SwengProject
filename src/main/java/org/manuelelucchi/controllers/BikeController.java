@@ -1,16 +1,19 @@
 package org.manuelelucchi.controllers;
 
-import java.io.IOException;
-
 import org.manuelelucchi.common.Controller;
 import org.manuelelucchi.data.DbManager;
 import org.manuelelucchi.models.BikeType;
 import org.manuelelucchi.models.Grip;
 import org.manuelelucchi.models.Subscription;
 
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.RadioButton;
+import javafx.scene.control.Toggle;
+import javafx.scene.control.ToggleGroup;
 
 /**
  * BikeController
@@ -20,72 +23,87 @@ public class BikeController extends Controller {
     private DbManager db;
 
     @FXML
-    public Button standardButton;
+    public Label priceLabel;
 
     @FXML
-    public Button electricButton;
+    public RadioButton standardRadio;
 
     @FXML
-    public Button electricSeatButton;
+    public RadioButton electricRadio;
 
     @FXML
-    public Label bikePositionLabel;
+    public RadioButton electricBabySeatRadio;
 
-    @FXML
-    public Button okButton;
+    public ToggleGroup group;
+
+    private BikeType type;
+
+    private boolean hasConfirmed;
 
     @Override
     public void onNavigateFrom(Controller sender, Object parameter) {
         this.subscription = (Subscription) parameter;
+        this.hasConfirmed = false;
+    }
+
+    @Override
+    public void init() {
         this.db = DbManager.getInstance();
-        this.okButton.setVisible(false);
+
+        group = new ToggleGroup();
+
+        standardRadio.setToggleGroup(group);
+        electricRadio.setToggleGroup(group);
+        electricBabySeatRadio.setToggleGroup(group);
+
+        group.selectedToggleProperty().addListener(new ChangeListener<Toggle>() {
+
+            @Override
+            public void changed(ObservableValue<? extends Toggle> arg0, Toggle arg1, Toggle arg2) {
+                bikeTypeChanged();
+            }
+        });
+
+        standardRadio.setSelected(true);
+
+        new java.util.Timer().schedule(new java.util.TimerTask() {
+            @Override
+            public void run() {
+                if (!hasConfirmed) {
+                    navigate("HomeView");
+                }
+            }
+        }, 20000);
     }
 
-    @FXML
-    public void standardBike() {
-        disableAll();
-        Grip grip = db.unlockBike(getTotemId(), subscription, BikeType.standard);
-        execute(grip);
-    }
-
-    @FXML
-    public void electricBike() {
-        disableAll();
-        Grip grip = db.unlockBike(getTotemId(), subscription, BikeType.electric);
-        execute(grip);
-    }
-
-    @FXML
-    public void electricSeatBike() {
-        disableAll();
-        Grip grip = db.unlockBike(getTotemId(), subscription, BikeType.electricBabySeat);
-        execute(grip);
-    }
-
-    @FXML
-    public void ok() {
-        navigate("HomeView");
-    }
-
-    public void enableAll() {
-        standardButton.setDisable(false);
-        electricButton.setDisable(false);
-        electricSeatButton.setDisable(false);
-    }
-
-    public void disableAll() {
-        standardButton.setDisable(true);
-        electricButton.setDisable(true);
-        electricSeatButton.setDisable(true);
-    }
-
-    private void execute(Grip grip) {
-        if (grip != null) {
-            bikePositionLabel.setText("La bicicletta si trova nella morsa: " + grip.getPosition());
-            okButton.setVisible(true);
+    private BikeType getSelectedType() {
+        var toggle = group.getSelectedToggle();
+        if (toggle.equals(standardRadio)) {
+            return BikeType.standard;
+        } else if (toggle.equals(electricRadio)) {
+            return BikeType.electric;
+        } else if (toggle.equals(electricBabySeatRadio)) {
+            return BikeType.electricBabySeat;
         } else {
-            bikePositionLabel.setText("Errore: Riprovare per favore");
-            enableAll();
+            throw new IllegalArgumentException();
         }
+    }
+
+    public void bikeTypeChanged() {
+        type = getSelectedType();
+        priceLabel.setText("You'll pay " + "qualcosa" + " after the first half hour");
+    }
+
+    @FXML
+    public void confirm() {
+        type = getSelectedType();
+        Grip grip = db.unlockBike(getTotemId(), subscription, type);
+        this.hasConfirmed = true;
+        navigate("PositionView", grip);
+    }
+
+    @FXML
+    public void home() {
+        navigate("HomeView");
     }
 }
