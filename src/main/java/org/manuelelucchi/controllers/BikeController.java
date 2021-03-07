@@ -5,6 +5,7 @@ import org.manuelelucchi.data.DbManager;
 import org.manuelelucchi.models.BikeType;
 import org.manuelelucchi.models.Grip;
 import org.manuelelucchi.models.Subscription;
+import org.manuelelucchi.models.Transaction;
 
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
@@ -97,9 +98,13 @@ public class BikeController extends Controller {
     @FXML
     public void confirm() {
         type = getSelectedType();
-        Grip grip = db.unlockBike(getTotemId(), subscription, type);
+        Transaction t = db.unlockBike(getTotemId(), subscription, type);
         this.hasConfirmed = true;
-        navigate("PositionView", grip);
+        if (t != null) {
+            navigate("PositionView", t);
+        } else {
+            navigate("AlternativeView", subscription);
+        }
     }
 
     @FXML

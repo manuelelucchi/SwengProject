@@ -11,8 +11,10 @@ public class Totem {
 
     }
 
-    public Totem(String address) {
+    public Totem(String address, int x, int y) {
         this.address = address;
+        this.x = x;
+        this.y = y;
     }
 
     @DatabaseField(generatedId = true)
@@ -20,6 +22,20 @@ public class Totem {
 
     public int getId() {
         return id;
+    }
+
+    @DatabaseField
+    private int x;
+
+    public int getX() {
+        return x;
+    }
+
+    @DatabaseField
+    private int y;
+
+    public int getY() {
+        return y;
     }
 
     @DatabaseField

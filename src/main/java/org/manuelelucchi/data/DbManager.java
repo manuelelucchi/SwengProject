@@ -116,7 +116,7 @@ public class DbManager {
         }
     }
 
-    public Grip unlockBike(int totemId, Subscription subscription, BikeType type) {
+    public Transaction unlockBike(int totemId, Subscription subscription, BikeType type) {
         try {
 
             if (!subscription.isAdmin()) {
@@ -144,7 +144,7 @@ public class DbManager {
 
             // Invia segnale a controllore di aprire la morsa
 
-            return grip;
+            return new Transaction(grip, rental);
         } catch (SQLException e) {
             return null;
         }
@@ -167,6 +167,7 @@ public class DbManager {
     }
 
     public boolean bikeNotRemoved(int gripId) {
+        // Cerca ed elimina rental
         return true;
     }
 
@@ -268,10 +269,19 @@ public class DbManager {
         return 0;
     }
 
+    public Totem nearestTotem(int fromId) {
+        try {
+            // todo
+            return totems.queryForId(fromId);
+        } catch (SQLException e) {
+            return null;
+        }
+    }
+
     public void createFakeData() throws SQLException {
 
-        Totem t1 = new Totem("Via Adios 14");
-        Totem t2 = new Totem("Via Vamos 12");
+        Totem t1 = new Totem("Via Adios 14", 0, 0);
+        Totem t2 = new Totem("Via Vamos 12", 1, 2);
 
         totems.create(t1);
         totems.create(t2);
