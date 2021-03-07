@@ -176,10 +176,13 @@ public class DbManager {
         return true;
     }
 
-    public boolean returnBike(Grip grip, Bike bike) {
+    public boolean returnBike(int gripId, Subscription subscription) {
         try {
-            Rental rental = bike.getRentals().stream().filter(x -> x.getEnd() == null).findFirst().get();
-            Subscription subscription = rental.getSubscription();
+            Grip grip = grips.queryForId(gripId);
+
+            Rental rental = subscription.getRentals().stream().filter(x -> x.getEnd() == null).findFirst().get();
+
+            Bike bike = rental.getBike();
 
             Date start = rental.getStart();
             Date end = DateUtils.now();
@@ -265,6 +268,10 @@ public class DbManager {
         }
     }
 
+    public boolean transactionCanceled(Transaction t) {
+        return true;
+    }
+
     public int mostUsedTime() {
         return 0;
     }
@@ -325,9 +332,17 @@ public class DbManager {
         bikes.update(b2);
         bikes.update(b3);
 
+        Card card = new Card(1, DateUtils.oneYear());
+
+        cards.create(card);
+
         Subscription admin = new Subscription("admin", SubscriptionType.admin, false);
         Subscription normal = new Subscription("normal", SubscriptionType.week, false);
         Subscription student = new Subscription("student", SubscriptionType.week, true);
+
+        admin.setCard(card);
+        normal.setCard(card);
+        student.setCard(card);
 
         subscriptions.create(admin);
         subscriptions.create(normal);

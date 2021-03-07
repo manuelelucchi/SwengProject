@@ -1,8 +1,10 @@
 package org.manuelelucchi.controllers;
 
 import org.manuelelucchi.common.Controller;
+import org.manuelelucchi.data.DbManager;
 
 import javafx.fxml.FXML;
+import javafx.scene.control.TextField;
 
 /**
  * HomeController

@@ -82,6 +82,10 @@ public class Subscription {
         this.numberOfExceed = numberOfExceed;
     }
 
+    public boolean isTerminated() {
+        return numberOfExceed >= 3;
+    }
+
     @ForeignCollectionField
     ForeignCollection<Rental> rentals;
 
@@ -104,31 +108,31 @@ public class Subscription {
 
     public double getCost() {
         switch (type) {
-            case day:
-                return 4.5;
-            case week:
-                return 9;
-            case year:
-                return 36;
-            case admin:
-                return 0;
-            default:
-                return 0;
+        case day:
+            return 4.5;
+        case week:
+            return 9;
+        case year:
+            return 36;
+        case admin:
+            return 0;
+        default:
+            return 0;
         }
     }
 
     public Duration getTime() {
         switch (type) {
-            case day:
-                return Duration.ofDays(1);
-            case week:
-                return Duration.ofDays(7);
-            case year:
-                return Duration.ofDays(365);
-            case admin:
-                return Duration.ofDays(1000);
-            default:
-                return Duration.ofDays(0);
+        case day:
+            return Duration.ofDays(1);
+        case week:
+            return Duration.ofDays(7);
+        case year:
+            return Duration.ofDays(365);
+        case admin:
+            return Duration.ofDays(1000);
+        default:
+            return Duration.ofDays(0);
         }
     }
 }

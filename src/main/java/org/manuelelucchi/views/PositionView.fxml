@@ -50,5 +50,8 @@
             <Font size="20.0"/>
          </font>
       </Button>
+
+      <Label text="---SIMULATION---"/>
+      <Button onAction="#bikeRetired" text="#Retired#"/>
    </children>
 </VBox>

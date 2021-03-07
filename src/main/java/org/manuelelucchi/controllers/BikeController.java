@@ -1,5 +1,8 @@
 package org.manuelelucchi.controllers;
 
+import java.util.Timer;
+import java.util.TimerTask;
+
 import org.manuelelucchi.common.Controller;
 import org.manuelelucchi.data.DbManager;
 import org.manuelelucchi.models.BikeType;
@@ -10,11 +13,14 @@ import org.manuelelucchi.models.Transaction;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXML;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.RadioButton;
+import javafx.scene.control.TextField;
 import javafx.scene.control.Toggle;
 import javafx.scene.control.ToggleGroup;
+import javafx.scene.control.Alert.AlertType;
 
 /**
  * BikeController
@@ -35,16 +41,22 @@ public class BikeController extends Controller {
     @FXML
     public RadioButton electricBabySeatRadio;
 
+    @FXML
+    public TextField gripField;
+
     public ToggleGroup group;
 
     private BikeType type;
 
     private boolean hasConfirmed;
 
+    private boolean hasReturned;
+
     @Override
     public void onNavigateFrom(Controller sender, Object parameter) {
         this.subscription = (Subscription) parameter;
         this.hasConfirmed = false;
+        this.hasReturned = false;
     }
 
     @Override
@@ -67,14 +79,14 @@ public class BikeController extends Controller {
 
         standardRadio.setSelected(true);
 
-        new java.util.Timer().schedule(new java.util.TimerTask() {
+        new Timer().schedule(new TimerTask() {
             @Override
             public void run() {
-                if (!hasConfirmed) {
+                if (!hasConfirmed || !hasReturned) {
                     navigate("HomeView");
                 }
             }
-        }, 20000);
+        }, 60000);
     }
 
     private BikeType getSelectedType() {
@@ -110,5 +122,24 @@ public class BikeController extends Controller {
     @FXML
     public void home() {
         navigate("HomeView");
+    }
+
+    @FXML
+    public void bikeReturned() {
+        try {
+            int gripId = Integer.parseInt(gripField.getText());
+            DbManager.getInstance().returnBike(gripId, subscription);
+            Alert a = new Alert(AlertType.INFORMATION, "Bike successfully returned");
+            a.setHeaderText(null);
+            a.show();
+            hasReturned = true;
+            navigate("HomeView");
+        } catch (NumberFormatException e) {
+            Alert a = new Alert(AlertType.ERROR, "Insert a valid number");
+            a.setHeaderText(null);
+            a.show();
+        } catch (IllegalArgumentException e) {
+
+        }
     }
 }

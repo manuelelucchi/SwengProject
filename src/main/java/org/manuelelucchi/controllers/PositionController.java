@@ -4,6 +4,7 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 import org.manuelelucchi.common.Controller;
+import org.manuelelucchi.data.DbManager;
 import org.manuelelucchi.models.Rental;
 import org.manuelelucchi.models.Transaction;
 
@@ -18,6 +19,7 @@ public class PositionController extends Controller {
 
     @Override
     public void init() {
+        isRetired = false;
         var grip = transaction.getGrip();
 
         codeLabel.setText("" + grip.getPosition());
@@ -31,6 +33,8 @@ public class PositionController extends Controller {
         }, 60000);
     }
 
+    private boolean isRetired;
+
     private Transaction transaction;
 
     @FXML
@@ -41,7 +45,14 @@ public class PositionController extends Controller {
         var rental = transaction.getRental();
         var subscription = rental.getSubscription();
 
+        DbManager.getInstance().transactionCanceled(transaction);
         // Cancella rental
         navigate("BikeView", subscription);
+    }
+
+    @FXML
+    public void bikeRetired() {
+        isRetired = true;
+        navigate("HomeView");
     }
 }
