@@ -3,7 +3,9 @@ package org.manuelelucchi.data;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.time.Duration;
+import java.util.Comparator;
 import java.util.Date;
+import java.util.List;
 import java.util.stream.Stream;
 
 import com.j256.ormlite.dao.Dao;
@@ -236,7 +238,6 @@ public class DbManager {
     }
 
     public void terminateSubscription(Subscription subscription) {
-
     }
 
     public boolean checkReturn(Subscription subscription) {
@@ -269,7 +270,22 @@ public class DbManager {
     }
 
     public boolean transactionCanceled(Transaction t) {
-        return true;
+        try {
+            Rental rental = t.getRental();
+            Grip grip = t.getGrip();
+
+            grips.refresh(grip);
+            rentals.refresh(rental);
+
+            if (grip.getBike() != null) {
+                rentals.delete(rental);
+            } else {
+                return false;
+            }
+            return true;
+        } catch (SQLException e) {
+            return false;
+        }
     }
 
     public int mostUsedTime() {
@@ -278,8 +294,21 @@ public class DbManager {
 
     public Totem nearestTotem(int fromId) {
         try {
-            // todo
-            return totems.queryForId(fromId);
+            Totem totem = totems.queryForId(fromId);
+
+            List<Totem> t = totems.queryForAll();
+            t.remove(totem);
+            var s = t.stream().min(new Comparator<Totem>() {
+                public int compare(Totem o1, Totem o2) {
+                    var v1 = Math.sqrt(Math.pow(Math.abs(o1.getX() - totem.getX()), 2)
+                            + Math.pow(Math.abs(o1.getY() - totem.getY()), 2));
+                    var v2 = Math.sqrt(Math.pow(Math.abs(o2.getX() - totem.getX()), 2)
+                            + Math.pow(Math.abs(o2.getY() - totem.getY()), 2));
+                    return Double.compare(v1, v2);
+                }
+            });
+
+            return s.get();
         } catch (SQLException e) {
             return null;
         }
