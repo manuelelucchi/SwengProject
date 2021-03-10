@@ -19,6 +19,10 @@ public abstract class Controller {
         return App.getTotemId();
     }
 
+    public void setTotemId(int id) {
+        App.setTotemId(id);
+    }
+
     public void navigate(String view, Object parameter) {
         try {
             App.navigate(this, view, parameter);

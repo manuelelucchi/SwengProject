@@ -25,6 +25,10 @@ public class App extends Application {
         return totemId;
     }
 
+    public static void setTotemId(int totemId) {
+        App.totemId = totemId;
+    }
+
     @Override
     public void start(Stage stage) throws IOException {
         DbManager db = DbManager.getInstance();
@@ -32,9 +36,9 @@ public class App extends Application {
         file.delete();
 
         db.ensureCreated();
-        // Se fallisce da gestire
 
         scene = new Scene(loadView("HomeView"), 1280, 720);
+        navigate(null, "HomeView");
         stage.setScene(scene);
         stage.setTitle("Bike Sharing");
         stage.setMinWidth(900);

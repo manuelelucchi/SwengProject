@@ -317,6 +317,14 @@ public class DbManager {
         }
     }
 
+    public List<Totem> getTotems() {
+        try {
+            return totems.queryForAll();
+        } catch (SQLException e) {
+            return null;
+        }
+    }
+
     public void createFakeData() throws SQLException {
 
         Totem t1 = new Totem("Via Adios 14", 0, 0);

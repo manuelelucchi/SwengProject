@@ -54,6 +54,9 @@
                </font>
             </RadioButton>
          </HBox>
+         <Button fx:id="adminButton" 
+            text="Admin Panel"
+            onAction="#admin"/>
          <Label fx:id="priceLabel">
             <font>
                <Font size="20.0"/>

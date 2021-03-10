@@ -1,8 +1,5 @@
 package org.manuelelucchi.controllers;
 
-import java.util.Timer;
-import java.util.TimerTask;
-
 import org.manuelelucchi.common.Controller;
 import org.manuelelucchi.data.DbManager;
 import org.manuelelucchi.models.BikeType;
@@ -44,19 +41,17 @@ public class BikeController extends Controller {
     @FXML
     public TextField gripField;
 
+    @FXML
+    public Button adminButton;
+
     public ToggleGroup group;
 
     private BikeType type;
 
-    private boolean hasConfirmed;
-
-    private boolean hasReturned;
-
     @Override
     public void onNavigateFrom(Controller sender, Object parameter) {
         this.subscription = (Subscription) parameter;
-        this.hasConfirmed = false;
-        this.hasReturned = false;
+        this.adminButton.setVisible(subscription.isAdmin());
     }
 
     @Override
@@ -78,15 +73,6 @@ public class BikeController extends Controller {
         });
 
         standardRadio.setSelected(true);
-
-        new Timer().schedule(new TimerTask() {
-            @Override
-            public void run() {
-                if (!hasConfirmed || !hasReturned) {
-                    navigate("HomeView");
-                }
-            }
-        }, 60000);
     }
 
     private BikeType getSelectedType() {
@@ -120,10 +106,14 @@ public class BikeController extends Controller {
     }
 
     @FXML
+    public void admin() {
+        navigate("AdminView", subscription);
+    }
+
+    @FXML
     public void confirm() {
         type = getSelectedType();
         Transaction t = db.unlockBike(getTotemId(), subscription, type);
-        this.hasConfirmed = true;
         if (t != null) {
             navigate("PositionView", t);
         } else {
@@ -144,7 +134,6 @@ public class BikeController extends Controller {
             Alert a = new Alert(AlertType.INFORMATION, "Bike successfully returned");
             a.setHeaderText(null);
             a.show();
-            hasReturned = true;
             navigate("HomeView");
         } catch (NumberFormatException e) {
             Alert a = new Alert(AlertType.ERROR, "Insert a valid number");
