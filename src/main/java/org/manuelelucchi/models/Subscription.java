@@ -82,10 +82,6 @@ public class Subscription {
         this.numberOfExceed = numberOfExceed;
     }
 
-    public boolean isTerminated() {
-        return numberOfExceed >= 3;
-    }
-
     @ForeignCollectionField
     ForeignCollection<Rental> rentals;
 
@@ -98,6 +94,11 @@ public class Subscription {
     }
 
     public boolean isExpired() {
+        if (isAdmin())
+            return false;
+        if (numberOfExceed >= 3) {
+            return true;
+        }
         if (startTime == null) {
             return false;
         }

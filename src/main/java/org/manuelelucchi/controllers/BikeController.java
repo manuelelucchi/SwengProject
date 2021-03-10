@@ -102,9 +102,21 @@ public class BikeController extends Controller {
         }
     }
 
+    public static String getPriceAfterTheFirstHalfHour(BikeType type, boolean isAdmin) {
+        if (isAdmin)
+            return "nothing";
+        switch (type) {
+        case standard:
+            return "0.5€ per half hour after the first one";
+        default:
+            return "0.25€ the first half hour and doubling going on";
+        }
+    }
+
     public void bikeTypeChanged() {
         type = getSelectedType();
-        priceLabel.setText("You'll pay " + "qualcosa" + " after the first half hour");
+        var price = getPriceAfterTheFirstHalfHour(type, subscription.isAdmin());
+        priceLabel.setText("You'll pay " + price);
     }
 
     @FXML

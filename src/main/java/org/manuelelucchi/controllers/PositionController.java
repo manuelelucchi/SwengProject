@@ -27,8 +27,10 @@ public class PositionController extends Controller {
         new Timer().schedule(new TimerTask() {
             @Override
             public void run() {
-                // Se non ha ritirato la bici bloccala e cancella rental
-                navigate("HomeView");
+                if (!isRetired) {
+                    DbManager.getInstance().bikeNotRemoved(transaction.getRental());
+                    navigate("HomeView");
+                }
             }
         }, 60000);
     }
@@ -46,7 +48,6 @@ public class PositionController extends Controller {
         var subscription = rental.getSubscription();
 
         DbManager.getInstance().transactionCanceled(transaction);
-        // Cancella rental
         navigate("BikeView", subscription);
     }
 

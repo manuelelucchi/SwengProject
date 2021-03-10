@@ -111,8 +111,7 @@ public class DbManager {
     public Subscription login(int code, String password) {
         try {
             var subscription = subscriptions.queryForId(code);
-            // Check password
-            return subscription;
+            return subscription.getPassword().equals(password) ? subscription : null;
         } catch (SQLException e) {
             return null;
         }
@@ -168,9 +167,13 @@ public class DbManager {
         }
     }
 
-    public boolean bikeNotRemoved(int gripId) {
-        // Cerca ed elimina rental
-        return true;
+    public boolean bikeNotRemoved(Rental rental) {
+        try {
+            rentals.delete(rental);
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
     }
 
     public boolean blockGrip(Grip grip) {
@@ -368,13 +371,17 @@ public class DbManager {
         Subscription admin = new Subscription("admin", SubscriptionType.admin, false);
         Subscription normal = new Subscription("normal", SubscriptionType.week, false);
         Subscription student = new Subscription("student", SubscriptionType.week, true);
+        Subscription expired = new Subscription("expired", SubscriptionType.day, true);
+        expired.setNumberOfExceed(3);
 
         admin.setCard(card);
         normal.setCard(card);
         student.setCard(card);
+        expired.setCard(card);
 
         subscriptions.create(admin);
         subscriptions.create(normal);
         subscriptions.create(student);
+        subscriptions.create(expired);
     }
 }
