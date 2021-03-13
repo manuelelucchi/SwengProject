@@ -36,12 +36,6 @@
          </font>
       </Label>
 
-      <Label text="If you don't retire your bike after 1 minutes the request will be canceled">
-         <font>
-            <Font size="20.0"/>
-         </font>
-      </Label>
-
       <Button text="Cancel" 
          onAction="#cancel"
          prefHeight="50"

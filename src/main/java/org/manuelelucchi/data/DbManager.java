@@ -3,9 +3,12 @@ package org.manuelelucchi.data;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.time.Duration;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import com.j256.ormlite.dao.Dao;
@@ -322,6 +325,55 @@ public class DbManager {
             return totems.queryForAll();
         } catch (SQLException e) {
             return null;
+        }
+    }
+
+    public List<Grip> getGrips(Totem totem) {
+        try {
+            totems.update(totem);
+            return totem.getGrips().stream().collect(Collectors.toList());
+        } catch (SQLException e) {
+            return null;
+        }
+    }
+
+    public List<Bike> getBikes(Totem totem) {
+        try {
+            totems.update(totem);
+            Collection<Grip> grips = totem.getGrips();
+            List<Bike> b = grips.stream().map(g -> g.getBike()).collect(Collectors.toList());
+            b.forEach(x -> {
+                try {
+                    bikes.update(x);
+                } catch (SQLException e) {
+                }
+            });
+            return b;
+        } catch (SQLException e) {
+            return null;
+        }
+    }
+
+    public boolean addBike(Grip grip, BikeType type) {
+        try {
+            var bike = new Bike(type);
+            bike.setGrip(grip);
+            grip.setBike(bike);
+            bikes.create(bike);
+            grips.update(grip);
+            return true;
+        } catch (SQLException e) {
+            return false;
+        }
+    }
+
+    public boolean removeGrip(Totem totem, Grip grip) {
+        try {
+            totems.update(totem);
+            grips.delete(grip);
+            return true;
+        } catch (SQLException e) {
+            return false;
         }
     }
 
