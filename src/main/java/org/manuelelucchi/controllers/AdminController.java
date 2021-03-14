@@ -1,5 +1,6 @@
 package org.manuelelucchi.controllers;
 
+import org.manuelelucchi.common.AlertUtils;
 import org.manuelelucchi.common.Controller;
 import org.manuelelucchi.common.EnumUtils;
 import org.manuelelucchi.data.DbManager;
@@ -12,6 +13,7 @@ import org.manuelelucchi.models.Totem;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXML;
+import javafx.scene.control.Button;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.TextField;
 import javafx.util.StringConverter;
@@ -32,10 +34,22 @@ public class AdminController extends Controller {
     public ChoiceBox<BikeType> bikeTypeChoiceBox;
 
     @FXML
+    public ChoiceBox<BikeType> gripTypeChoiceBox;
+
+    @FXML
     public TextField bikeNameTextField;
 
     @FXML
     public ChoiceBox<Bike> bikesChoiceBox;
+
+    @FXML
+    public Button markOperativeButton;
+
+    @FXML
+    public Button removeBikeButton;
+
+    @FXML
+    public Button removeGripButton;
 
     @Override
     public void onNavigateFrom(Controller sender, Object parameter) {
@@ -75,16 +89,12 @@ public class AdminController extends Controller {
                 throw new IllegalAccessError();
             }
         });
-        gripsChoiceBox.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<Grip>() {
-            @Override
-            public void changed(ObservableValue<? extends Grip> arg0, Grip arg1, Grip arg2) {
-                updateBikes();
-            }
-        });
 
         bikesChoiceBox.setConverter(new StringConverter<Bike>() {
             @Override
             public String toString(Bike l) {
+                if (l == null)
+                    return "ERRORE";
                 return l.getId() + ": " + EnumUtils.toString(l.getType());
             }
 
@@ -108,6 +118,20 @@ public class AdminController extends Controller {
         });
         bikeTypeChoiceBox.getSelectionModel().selectFirst();
 
+        gripTypeChoiceBox.getItems().addAll(BikeType.standard, BikeType.electric, BikeType.electricBabySeat);
+        gripTypeChoiceBox.setConverter(new StringConverter<BikeType>() {
+            @Override
+            public String toString(BikeType l) {
+                return EnumUtils.toString(l);
+            }
+
+            @Override
+            public BikeType fromString(String language) {
+                throw new IllegalAccessError();
+            }
+        });
+        gripTypeChoiceBox.getSelectionModel().selectFirst();
+
         updateGrips();
     }
 
@@ -119,11 +143,16 @@ public class AdminController extends Controller {
         return totemChoiceBox.getSelectionModel().getSelectedItem();
     }
 
+    private Bike getBike() {
+        return bikesChoiceBox.getSelectionModel().getSelectedItem();
+    }
+
     private void updateGrips() {
         var grips = manager.getGrips(getTotem());
         gripsChoiceBox.getItems().clear();
         gripsChoiceBox.getItems().addAll(grips);
         gripsChoiceBox.getSelectionModel().selectFirst();
+        removeGripButton.setDisable(grips == null || grips.size() == 0);
         updateBikes();
     }
 
@@ -132,30 +161,59 @@ public class AdminController extends Controller {
         bikesChoiceBox.getItems().clear();
         bikesChoiceBox.getItems().addAll(bikes);
         bikesChoiceBox.getSelectionModel().selectFirst();
+        var res = bikes == null || bikes.size() == 0;
+        removeBikeButton.setDisable(res);
+        markOperativeButton.setDisable(res);
     }
 
     @FXML
     public void removeGrip() {
-        manager.removeGrip(getTotem(), getGrip());
-        updateGrips();
+        if (manager.removeGrip(getTotem(), getGrip())) {
+            updateGrips();
+        } else {
+            AlertUtils.showError("");
+        }
     }
 
     @FXML
     public void addBike() {
         var type = bikeTypeChoiceBox.getSelectionModel().getSelectedItem();
         var grip = getGrip();
-        manager.addBike(grip, type);
-        updateBikes();
+        if (grip.getBike() != null) {
+            AlertUtils.showError("There's already a bike in this grip");
+        } else {
+            manager.addBike(grip, type);
+            updateBikes();
+        }
     }
 
     @FXML
     public void removeBike() {
+        var bike = getBike();
+        if (manager.removeBike(bike)) {
+            updateBikes();
+        } else {
+            AlertUtils.showError("");
+        }
+    }
 
+    @FXML
+    public void addGrip() {
+        if (manager.addGrip(getTotem(), gripTypeChoiceBox.getSelectionModel().getSelectedItem())) {
+            updateGrips();
+        } else {
+            AlertUtils.showError("");
+        }
     }
 
     @FXML
     public void bikeOperative() {
-
+        var bike = getBike();
+        if (manager.makeBikeOperative(bike)) {
+            AlertUtils.showInfo("Done!");
+        } else {
+            AlertUtils.showError("");
+        }
     }
 
     @FXML

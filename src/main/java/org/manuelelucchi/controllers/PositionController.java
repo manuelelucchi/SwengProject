@@ -15,13 +15,10 @@ public class PositionController extends Controller {
 
     @Override
     public void init() {
-        isRetired = false;
         var grip = transaction.getGrip();
 
         codeLabel.setText("" + grip.getPosition());
     }
-
-    private boolean isRetired;
 
     private Transaction transaction;
 
@@ -39,7 +36,6 @@ public class PositionController extends Controller {
 
     @FXML
     public void bikeRetired() {
-        isRetired = true;
         navigate("HomeView");
     }
 }

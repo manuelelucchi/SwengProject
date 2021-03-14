@@ -1,17 +1,13 @@
 package org.manuelelucchi.controllers;
 
-import java.io.IOException;
-
-import org.manuelelucchi.App;
+import org.manuelelucchi.common.AlertUtils;
 import org.manuelelucchi.common.Controller;
 import org.manuelelucchi.data.DbManager;
 import org.manuelelucchi.models.Subscription;
 
 import javafx.fxml.FXML;
-import javafx.scene.control.Alert;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
-import javafx.scene.control.Alert.AlertType;
 
 public class LoginController extends Controller {
     @FXML
@@ -32,16 +28,10 @@ public class LoginController extends Controller {
         var password = passwordField.getText();
         Subscription subscription = db.login(Integer.parseInt(code), password);
         if (subscription == null) {
-            Alert a = new Alert(AlertType.ERROR, "You are not subscribed or wrong password");
-            a.setHeaderText(null);
-            a.setTitle("Error");
-            a.showAndWait();
+            AlertUtils.showError("You are not subscribed or wrong password");
             navigate("RegistrationView");
         } else if (subscription.isExpired()) {
-            Alert a = new Alert(AlertType.ERROR, "Your subscription is expired");
-            a.setHeaderText(null);
-            a.setTitle("Error");
-            a.showAndWait();
+            AlertUtils.showError("Your subscription is expired");
             navigate("RegistrationView");
         } else {
             navigate("BikeView", subscription);

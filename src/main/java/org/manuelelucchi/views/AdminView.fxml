@@ -35,8 +35,10 @@
       <Label text="Grip"/>
       <HBox alignment="CENTER"
          spacing="10">
+         <ChoiceBox fx:id="gripTypeChoiceBox"/>
+         <Button text="Add" onAction="#addGrip"/>
          <ChoiceBox fx:id="gripsChoiceBox"/>
-         <Button text="Remove" onAction="#removeGrip"/>
+         <Button fx:id="removeGripButton" text="Remove" onAction="#removeGrip"/>
       </HBox>
       <HBox alignment="CENTER"
       spacing="10">
@@ -49,9 +51,9 @@
             <Label text="Manage Bikes"/>
             <HBox spacing="10" alignment="CENTER">
                <ChoiceBox fx:id="bikesChoiceBox"/>
-               <Button text="Remove" onAction="#removeBike"/>
+               <Button fx:id="removeBikeButton" text="Remove" onAction="#removeBike"/>
             </HBox>
-            <Button text="Mark operative" onAction="#bikeOperative"/>
+            <Button fx:id="markOperativeButton" text="Mark operative" onAction="#bikeOperative"/>
          </VBox>
       </HBox>
    </VBox>

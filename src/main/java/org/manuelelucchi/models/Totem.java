@@ -52,4 +52,11 @@ public class Totem {
         return grips;
     }
 
+    @ForeignCollectionField
+    ForeignCollection<Rental> rentals;
+
+    public ForeignCollection<Rental> getRentals() {
+        return this.rentals;
+    }
+
 }

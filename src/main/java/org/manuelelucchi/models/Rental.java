@@ -14,9 +14,10 @@ public class Rental {
 
     }
 
-    public Rental(Subscription subscription, Bike bike) {
+    public Rental(Totem totem, Subscription subscription, Bike bike) {
         this.subscription = subscription;
         this.bike = bike;
+        this.totem = totem;
         start = DateUtils.now();
     }
 
@@ -57,5 +58,12 @@ public class Rental {
 
     public Subscription getSubscription() {
         return subscription;
+    }
+
+    @DatabaseField(foreign = true)
+    private Totem totem;
+
+    public Totem getTotem() {
+        return this.totem;
     }
 }

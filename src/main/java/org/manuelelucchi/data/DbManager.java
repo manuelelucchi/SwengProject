@@ -143,7 +143,7 @@ public class DbManager {
             var grip = maybeGrip.get();
             var bike = grip.getBike();
 
-            Rental rental = new Rental(subscription, bike);
+            Rental rental = new Rental(totem, subscription, bike);
             rentals.create(rental);
 
             // Invia segnale a controllore di aprire la morsa
@@ -269,7 +269,17 @@ public class DbManager {
 
     public Totem mostUsedTotem() {
         try {
-            return totems.queryForId(1);
+            var t = totems.queryForAll();
+            var o = t.stream().max(new Comparator<Totem>() {
+                public int compare(Totem o1, Totem o2) {
+                    return Integer.compare(o1.getRentals().size(), o2.getRentals().size());
+                };
+            });
+            if (o.isPresent()) {
+                return o.get();
+            } else {
+                return null;
+            }
         } catch (SQLException e) {
             return null;
         }
@@ -341,7 +351,7 @@ public class DbManager {
         try {
             totems.update(totem);
             Collection<Grip> grips = totem.getGrips();
-            List<Bike> b = grips.stream().map(g -> g.getBike()).collect(Collectors.toList());
+            List<Bike> b = grips.stream().map(g -> g.getBike()).filter(x -> x != null).collect(Collectors.toList());
             b.forEach(x -> {
                 try {
                     bikes.update(x);
@@ -367,10 +377,55 @@ public class DbManager {
         }
     }
 
+    public boolean addGrip(Totem totem, BikeType type) {
+        try {
+            var g = totem.getGrips();
+            var sorted = g.stream().sorted(new Comparator<Grip>() {
+                public int compare(Grip o1, Grip o2) {
+                    return Integer.compare(o1.getPosition(), o2.getPosition());
+                };
+            }).collect(Collectors.toList());
+            int expectedPos = 0;
+            for (int i = 0; i < sorted.size(); i++) {
+                if (sorted.get(i).getPosition() != expectedPos)
+                    break;
+                expectedPos++;
+            }
+            grips.create(new Grip(totem, type, expectedPos));
+            return true;
+        } catch (SQLException e) {
+            return false;
+        }
+    }
+
     public boolean removeGrip(Totem totem, Grip grip) {
         try {
             totems.update(totem);
             grips.delete(grip);
+            return true;
+        } catch (SQLException e) {
+            return false;
+        }
+    }
+
+    public boolean removeBike(Bike bike) {
+        try {
+            var grip = bike.getGrip();
+            bikes.delete(bike);
+            if (grip != null) {
+                grip.setBike(null);
+                grips.update(grip);
+            }
+            return true;
+        } catch (SQLException e) {
+            return false;
+        }
+    }
+
+    public boolean makeBikeOperative(Bike bike) {
+        try {
+            bike.setBroken(false);
+            bikes.update(bike);
             return true;
         } catch (SQLException e) {
             return false;
