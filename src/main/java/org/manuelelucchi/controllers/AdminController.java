@@ -81,6 +81,8 @@ public class AdminController extends Controller {
         gripsChoiceBox.setConverter(new StringConverter<Grip>() {
             @Override
             public String toString(Grip l) {
+                if (l == null)
+                    return "ERROR";
                 return l.getPosition() + "";
             }
 
@@ -116,6 +118,13 @@ public class AdminController extends Controller {
                 throw new IllegalAccessError();
             }
         });
+        bikesChoiceBox.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<Bike>() {
+            @Override
+            public void changed(ObservableValue<? extends Bike> arg0, Bike arg1, Bike arg2) {
+                markOperativeButton.setDisable(arg2 == null || !arg2.isBroken());
+            }
+        });
+
         bikeTypeChoiceBox.getSelectionModel().selectFirst();
 
         gripTypeChoiceBox.getItems().addAll(BikeType.standard, BikeType.electric, BikeType.electricBabySeat);
@@ -168,7 +177,11 @@ public class AdminController extends Controller {
 
     @FXML
     public void removeGrip() {
-        if (manager.removeGrip(getTotem(), getGrip())) {
+        var grip = getGrip();
+        var totem = getTotem();
+        if (grip.getBike() != null) {
+            AlertUtils.showError("You can't remove a grip with a bike on it");
+        } else if (manager.removeGrip(totem, grip)) {
             updateGrips();
         } else {
             AlertUtils.showError("");
@@ -182,8 +195,12 @@ public class AdminController extends Controller {
         if (grip.getBike() != null) {
             AlertUtils.showError("There's already a bike in this grip");
         } else {
-            manager.addBike(grip, type);
-            updateBikes();
+            if (manager.addBike(grip, type)) {
+                updateBikes();
+                bikesChoiceBox.getSelectionModel().selectLast();
+            } else {
+                AlertUtils.showError("");
+            }
         }
     }
 
@@ -201,6 +218,7 @@ public class AdminController extends Controller {
     public void addGrip() {
         if (manager.addGrip(getTotem(), gripTypeChoiceBox.getSelectionModel().getSelectedItem())) {
             updateGrips();
+            gripsChoiceBox.getSelectionModel().selectLast();
         } else {
             AlertUtils.showError("");
         }

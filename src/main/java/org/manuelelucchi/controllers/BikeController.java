@@ -37,9 +37,6 @@ public class BikeController extends Controller {
     public RadioButton electricBabySeatRadio;
 
     @FXML
-    public TextField gripField;
-
-    @FXML
     public Button adminButton;
 
     public ToggleGroup group;
@@ -122,19 +119,5 @@ public class BikeController extends Controller {
     @FXML
     public void home() {
         navigate("HomeView");
-    }
-
-    @FXML
-    public void bikeReturned() {
-        try {
-            int gripId = Integer.parseInt(gripField.getText());
-            DbManager.getInstance().returnBike(gripId, subscription);
-            AlertUtils.showInfo("Bike successfully returned");
-            navigate("HomeView");
-        } catch (NumberFormatException e) {
-            AlertUtils.showError("Insert a valid number");
-        } catch (IllegalArgumentException e) {
-
-        }
     }
 }

@@ -13,9 +13,6 @@ public class StatisticsController extends Controller {
     public Label maxTotem;
 
     @FXML
-    public Label maxTime;
-
-    @FXML
     public void back() {
         navigate("HomeView");
     }
@@ -29,9 +26,6 @@ public class StatisticsController extends Controller {
 
         String mostUsedTotem = db.mostUsedTotem().getAddress();
         maxTotem.setText("Most used Totem: " + mostUsedTotem);
-
-        int mostUsedTime = db.mostUsedTime();
-        maxTime.setText("Most popular time slot: " + mostUsedTime);
     }
 
 }

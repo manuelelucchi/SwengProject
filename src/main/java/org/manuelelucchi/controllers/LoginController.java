@@ -1,8 +1,12 @@
 package org.manuelelucchi.controllers;
 
+import java.util.Comparator;
+
 import org.manuelelucchi.common.AlertUtils;
 import org.manuelelucchi.common.Controller;
+import org.manuelelucchi.common.DateUtils;
 import org.manuelelucchi.data.DbManager;
+import org.manuelelucchi.models.Rental;
 import org.manuelelucchi.models.Subscription;
 
 import javafx.fxml.FXML;
@@ -31,10 +35,29 @@ public class LoginController extends Controller {
             AlertUtils.showError("You are not subscribed or wrong password");
             navigate("RegistrationView");
         } else if (subscription.isExpired()) {
-            AlertUtils.showError("Your subscription is expired");
+            AlertUtils.showError("Your subscription is expired or blocked");
             navigate("RegistrationView");
         } else {
-            navigate("BikeView", subscription);
+            var r = subscription.getRentals().stream().max(new Comparator<Rental>() {
+                @Override
+                public int compare(Rental o1, Rental o2) {
+                    var end1 = o1.getEnd();
+                    var end2 = o2.getEnd();
+                    return Long.compare(end1 == null ? 0 : end1.getTime(), end2 == null ? 0 : end2.getTime());
+                }
+            });
+
+            if (!r.isPresent()) {
+                navigate("BikeView", subscription);
+            } else if (r.get().getEnd() == null) {
+                AlertUtils.showError("You must return your bike before renting another");
+            }
+
+            else if (DateUtils.sub(r.get().getEnd(), DateUtils.now()).toMinutes() < 5) {
+                AlertUtils.showError("5 minutes must pass between one rental and another");
+            } else {
+                navigate("BikeView", subscription);
+            }
         }
     }
 }

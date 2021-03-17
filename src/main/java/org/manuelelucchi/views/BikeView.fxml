@@ -76,15 +76,7 @@
                <Font size="20.0"/>
             </font>
          </Button>
-         <Label alignment="CENTER" text="---SIMULATION---"/>
-         <HBox alignment="CENTER" spacing="10">
-            <TextField fx:id="gripField"/>
-            <Button 
-               text="#Bike Returned#"
-               onAction="#bikeReturned"/>
-         </HBox>
       </VBox>
-
       <Button text="Home" 
          onAction="#home"
          AnchorPane.leftAnchor="20.0"

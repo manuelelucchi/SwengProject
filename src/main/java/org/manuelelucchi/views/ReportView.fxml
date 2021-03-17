@@ -6,6 +6,7 @@
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.TextField?>
+<?import javafx.scene.control.ChoiceBox?>
 <?import javafx.scene.text.Font?>
 <?import javafx.geometry.Insets?>
 
@@ -31,22 +32,20 @@
                <Font size="20.0"/>
             </font>
          </Label>
-         <TextField fx:id="numberField" 
-            maxWidth="250"
-            prefHeight="40">
-            <font>
-               <Font size="20.0"/>
-            </font>
-         </TextField>
-         <Button text="Report" 
-            onAction="#report"
-            prefHeight="50"
-            prefWidth="100">
-            <font>
-               <Font size="20.0"/>
-            </font>
-         </Button>
-         <Label fx:id="responseLabel"/>
+         <HBox alignment="CENTER" spacing="10">
+            <ChoiceBox fx:id="bikesBox" 
+               prefWidth="250"
+               prefHeight="40">
+            </ChoiceBox>
+            <Button text="Report" 
+               onAction="#report"
+               prefHeight="50"
+               prefWidth="100">
+               <font>
+                  <Font size="20.0"/>
+               </font>
+            </Button>
+         </HBox>
       </VBox>
       <Button text="Back" 
          onAction="#back"

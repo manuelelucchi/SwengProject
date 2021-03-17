@@ -184,13 +184,23 @@ public class DbManager {
         return true;
     }
 
-    public boolean returnBike(int gripId, Subscription subscription) {
+    public boolean returnBike(Grip grip, int bikeId) {
         try {
-            Grip grip = grips.queryForId(gripId);
 
-            Rental rental = subscription.getRentals().stream().filter(x -> x.getEnd() == null).findFirst().get();
+            Bike bike = bikes.queryForId(bikeId);
 
-            Bike bike = rental.getBike();
+            var r = bike.getRentals().stream().filter(x -> x.getEnd() == null).findFirst();
+
+            if (!r.isPresent()) {
+                return false;
+            }
+
+            var rental = r.get();
+            rentals.refresh(rental);
+
+            var subscription = rental.getSubscription();
+
+            subscriptions.refresh(subscription);
 
             Date start = rental.getStart();
             Date end = DateUtils.now();
@@ -202,7 +212,6 @@ public class DbManager {
             rental.setEnd(end);
 
             rentals.update(rental);
-            subscriptions.update(subscription);
             bikes.update(bike);
             grips.update(grip);
 
@@ -231,19 +240,12 @@ public class DbManager {
         } else if (duration.toMinutes() > 120) {
             int exceeds = subscription.getNumberOfExceed();
             exceeds += 1;
-            if (exceeds == 3) {
-                terminateSubscription(subscription);
-            } else {
-                subscription.setNumberOfExceed(exceeds);
-            }
+            subscription.setNumberOfExceed(exceeds);
         }
 
         toPay += bike.getCost(halfHours);
 
         return toPay;
-    }
-
-    public void terminateSubscription(Subscription subscription) {
     }
 
     public boolean checkReturn(Subscription subscription) {
@@ -264,7 +266,19 @@ public class DbManager {
     }
 
     public int meanBikesUsed() {
-        return 0;
+        try {
+            var r = rentals.queryForAll();
+            var minDate = r.stream().min(new Comparator<Rental>() {
+                @Override
+                public int compare(Rental o1, Rental o2) {
+                    return Long.compare(o1.getStart().getTime(), o2.getStart().getTime());
+                }
+            }).get().getStart();
+            long days = DateUtils.sub(minDate, DateUtils.now()).toDays();
+            return (int) (r.size() / days);
+        } catch (Exception e) {
+            return 0;
+        }
     }
 
     public Totem mostUsedTotem() {
@@ -302,10 +316,6 @@ public class DbManager {
         } catch (SQLException e) {
             return false;
         }
-    }
-
-    public int mostUsedTime() {
-        return 0;
     }
 
     public Totem nearestTotem(int fromId) {
@@ -347,6 +357,15 @@ public class DbManager {
         }
     }
 
+    public List<Bike> getBikes(int totemId) {
+        try {
+            var totem = totems.queryForId(totemId);
+            return getBikes(totem);
+        } catch (SQLException e) {
+            return null;
+        }
+    }
+
     public List<Bike> getBikes(Totem totem) {
         try {
             totems.update(totem);
@@ -354,8 +373,8 @@ public class DbManager {
             List<Bike> b = grips.stream().map(g -> g.getBike()).filter(x -> x != null).collect(Collectors.toList());
             b.forEach(x -> {
                 try {
-                    bikes.update(x);
-                } catch (SQLException e) {
+                    bikes.refresh(x);
+                } catch (Exception e) {
                 }
             });
             return b;
@@ -367,10 +386,11 @@ public class DbManager {
     public boolean addBike(Grip grip, BikeType type) {
         try {
             var bike = new Bike(type);
+            bikes.create(bike);
             bike.setGrip(grip);
             grip.setBike(bike);
-            bikes.create(bike);
             grips.update(grip);
+            bikes.update(bike);
             return true;
         } catch (SQLException e) {
             return false;

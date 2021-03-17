@@ -1,19 +1,47 @@
 package org.manuelelucchi.controllers;
 
+import java.util.stream.Collectors;
+
 import org.manuelelucchi.common.AlertUtils;
 import org.manuelelucchi.common.Controller;
 import org.manuelelucchi.data.DbManager;
+import org.manuelelucchi.models.Bike;
 
 import javafx.fxml.FXML;
-import javafx.scene.control.Label;
-import javafx.scene.control.TextField;
+import javafx.scene.control.ChoiceBox;
+import javafx.util.StringConverter;
 
 public class ReportController extends Controller {
     @FXML
-    public TextField numberField;
+    public ChoiceBox<Bike> bikesBox;
 
-    @FXML
-    public Label responseLabel;
+    @Override
+    public void init() {
+        bikesBox.setConverter(new StringConverter<Bike>() {
+            @Override
+            public String toString(Bike b) {
+                if (b != null) {
+                    return b.getId() + "";
+                }
+                return "ERRORE";
+            }
+
+            @Override
+            public Bike fromString(String arg0) {
+                throw new IllegalAccessError();
+            }
+        });
+
+        updateBikes();
+    }
+
+    public void updateBikes() {
+        var bikes = DbManager.getInstance().getBikes(getTotemId()).stream().filter(x -> !x.isBroken())
+                .collect(Collectors.toList());
+        bikesBox.getItems().clear();
+        bikesBox.getItems().addAll(bikes);
+        bikesBox.getSelectionModel().selectFirst();
+    }
 
     @FXML
     public void back() {
@@ -22,13 +50,12 @@ public class ReportController extends Controller {
 
     @FXML
     public void report() {
-        try {
-            int code = Integer.parseInt(numberField.getText());
-            boolean res = DbManager.getInstance().reportBroken(code);
-            responseLabel.setText(res ? "Thanks, the bike is now blocked" : "Can't find the specified bike");
-        } catch (NumberFormatException e) {
-            AlertUtils.showError("You have to insert a valid number");
-            numberField.setText("");
+        int code = bikesBox.getSelectionModel().getSelectedItem().getId();
+        if (DbManager.getInstance().reportBroken(code)) {
+            AlertUtils.showInfo("Done!");
+            updateBikes();
+        } else {
+            AlertUtils.showError("");
         }
     }
 

@@ -5,6 +5,7 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.Button?>
+<?import javafx.scene.control.TextField?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.control.ChoiceBox?>
@@ -42,15 +43,26 @@
             <Font size="20.0" />
          </font>
       </Button>
-      <HBox GridPane.columnIndex="0" 
+      <VBox GridPane.columnIndex="0" 
+         GridPane.rowIndex="2"
+         spacing="10">               
+         <Label text="---SIMULATION---"/>
+         <Label text="#Change Totem#"/>               
+         <ChoiceBox fx:id="totemChoiceBox"
+            onAction="#totemChanged"/>
+      </VBox>  
+      <VBox  GridPane.columnIndex="1" 
             GridPane.rowIndex="2"
             spacing="10">
-            <VBox alignment="CENTER">               
-               <Label text="---SIMULATION---"/>
-               <Label text="#Change Totem#"/>               
-            </VBox>
-            <ChoiceBox fx:id="totemChoiceBox"
-                  onAction="#totemChanged"/>
-      </HBox>      
+       <Label alignment="CENTER" text="---SIMULATION---"/>
+         <Label text="Select the grip and insert the bike id"/>
+         <HBox alignment="CENTER" spacing="10">
+            <ChoiceBox fx:id="gripsBox"/>
+            <TextField fx:id="bikeField"/>
+         </HBox>
+         <Button 
+            text="#Bike Returned#"
+            onAction="#bikeReturned"/>
+      </VBox>
    </children>
 </GridPane>
