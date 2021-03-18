@@ -32,6 +32,7 @@ public class Card {
     }
 
     public boolean pay(double amount) {
+        // Simulated
         return true;
     }
 

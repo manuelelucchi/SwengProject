@@ -95,17 +95,18 @@ public class DbManager {
             Subscription subscription = new Subscription(password, type, isStudent);
             Card card = new Card(cardCode, cardExpireDate);
 
-            subscription.setCard(card);
-            if (type == SubscriptionType.year) {
-                subscription.activate();
+            if (card.pay(subscription.getCost())) {
+                subscription.setCard(card);
+                if (type == SubscriptionType.year) {
+                    subscription.activate();
+                    subscriptions.create(subscription);
+                    cards.createIfNotExists(card);
+                }
+                return subscription;
+            } else {
+                return null;
             }
 
-            // card.pay(amount)
-
-            subscriptions.create(subscription);
-            cards.createIfNotExists(card);
-
-            return subscription;
         } catch (SQLException e) {
             return null;
         }
