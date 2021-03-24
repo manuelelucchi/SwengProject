@@ -47,4 +47,11 @@ public class DbTests {
     void testReport() {
         assertTrue(db.reportBroken(1));
     }
+
+    @DisplayName("Test Make Operative")
+    @Test
+    void testMakeOperative() {
+
+        assertTrue(db.makeBikeOperative(db.getBikes(1).get(0)));
+    }
 }
