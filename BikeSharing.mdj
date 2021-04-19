@@ -973,7 +973,7 @@
 									"font": "Arial;13;0",
 									"left": 424.5,
 									"top": 603,
-									"width": 117,
+									"width": 117.65625,
 									"height": 25,
 									"stereotypeLabel": {
 										"$ref": "AAAAAAF3vC1wcBnXAdI="
@@ -1903,7 +1903,7 @@
 									"font": "Arial;13;0",
 									"left": 442.5,
 									"top": 236.5,
-									"width": 89,
+									"width": 89.4599609375,
 									"height": 25,
 									"stereotypeLabel": {
 										"$ref": "AAAAAAF3vDBc2ilScI0="
@@ -2294,7 +2294,7 @@
 							"font": "Arial;18;0",
 							"left": 72,
 							"top": 40,
-							"width": 94.9638671875,
+							"width": 103.0234375,
 							"height": 48,
 							"autoResize": true,
 							"text": "Diagramma generale"
@@ -2388,7 +2388,7 @@
 									"font": "Arial;13;0",
 									"left": 536.5,
 									"top": 807,
-									"width": 117,
+									"width": 117.65625,
 									"height": 25,
 									"stereotypeLabel": {
 										"$ref": "AAAAAAF3vD0ew3ZOD38="
@@ -2584,7 +2584,7 @@
 									"font": "Arial;13;0",
 									"left": 276,
 									"top": 775.5,
-									"width": 135,
+									"width": 135.72802734375,
 									"height": 25,
 									"stereotypeLabel": {
 										"$ref": "AAAAAAF3vD1tcng/Hj0="
@@ -2778,7 +2778,7 @@
 									"font": "Arial;13;0",
 									"left": 282,
 									"top": 859,
-									"width": 125,
+									"width": 125.5908203125,
 									"height": 25,
 									"stereotypeLabel": {
 										"$ref": "AAAAAAF3vD7RbnwRKU4="
@@ -4194,7 +4194,7 @@
 									"font": "Arial;13;0",
 									"left": 541,
 									"top": 1155,
-									"width": 176,
+									"width": 176.91162109375,
 									"height": 25,
 									"stereotypeLabel": {
 										"$ref": "AAAAAAF3vE+Db9zVboU="
@@ -4393,7 +4393,7 @@
 									"font": "Arial;13;0",
 									"left": 219.5,
 									"top": 1151,
-									"width": 170,
+									"width": 171.0908203125,
 									"height": 25,
 									"stereotypeLabel": {
 										"$ref": "AAAAAAF3vE/p1d8CuSs="
@@ -4994,7 +4994,7 @@
 									"font": "Arial;13;0",
 									"left": 207.5,
 									"top": 1447.5,
-									"width": 265,
+									"width": 266.43896484375,
 									"height": 25,
 									"stereotypeLabel": {
 										"$ref": "AAAAAAF3vFJ5LgFqvU4="
@@ -5288,7 +5288,7 @@
 									"font": "Arial;13;0",
 									"left": 638.5,
 									"top": 1443,
-									"width": 144,
+									"width": 145.0908203125,
 									"height": 25,
 									"stereotypeLabel": {
 										"$ref": "AAAAAAF3vFSAzA52VmQ="
@@ -5582,7 +5582,7 @@
 									"font": "Arial;13;0",
 									"left": 700,
 									"top": 1055,
-									"width": 172,
+									"width": 173.1982421875,
 									"height": 25,
 									"stereotypeLabel": {
 										"$ref": "AAAAAAF3vF9abomRbEc="
@@ -6080,7 +6080,7 @@
 									"font": "Arial;13;0",
 									"left": 75,
 									"top": 1731,
-									"width": 167,
+									"width": 168.1708984375,
 									"height": 25,
 									"stereotypeLabel": {
 										"$ref": "AAAAAAF3vGKqxvlblqk="
@@ -6279,7 +6279,7 @@
 									"font": "Arial;13;0",
 									"left": 356,
 									"top": 1755,
-									"width": 171,
+									"width": 172.525390625,
 									"height": 25,
 									"stereotypeLabel": {
 										"$ref": "AAAAAAF3vGMTGfuIw74="
@@ -6478,7 +6478,7 @@
 									"font": "Arial;13;0",
 									"left": 647.5,
 									"top": 1727.5,
-									"width": 149,
+									"width": 150.1181640625,
 									"height": 25,
 									"stereotypeLabel": {
 										"$ref": "AAAAAAF3vGNSsP95d8Q="
@@ -6959,7 +6959,7 @@
 									"font": "Arial;13;0",
 									"left": 674,
 									"top": 1647,
-									"width": 164,
+									"width": 164.57177734375,
 									"height": 25,
 									"stereotypeLabel": {
 										"$ref": "AAAAAAF3vGSmmwpQqwQ="
@@ -35994,7 +35994,7 @@
 			"_parent": {
 				"$ref": "AAAAAAFF+h6SjaM2Hec="
 			},
-			"name": "Sequence Diagram",
+			"name": "Sequence Diagrams",
 			"ownedElements": [
 				{
 					"_type": "UMLInteraction",
@@ -40910,9 +40910,9 @@
 												"$ref": "AAAAAAF4qP+cyqJc6z8="
 											},
 											"font": "Arial;13;0",
-											"left": 40.72998046875,
+											"left": 38.55908203125,
 											"top": 13,
-											"width": 103.603515625,
+											"width": 91.62548828125,
 											"height": 13,
 											"text": "Gestione Sistema"
 										},
@@ -40925,7 +40925,7 @@
 											"font": "Arial;13;1",
 											"left": 21,
 											"top": 13,
-											"width": 14.72998046875,
+											"width": 12.55908203125,
 											"height": 13,
 											"text": "sd"
 										}
