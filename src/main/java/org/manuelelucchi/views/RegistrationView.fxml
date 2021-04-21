@@ -104,6 +104,24 @@
             </Label>
             <CheckBox fx:id="studentBox"/>              
          </HBox> 
+         <HBox>
+            <VBox>
+               <Label text="Student E-Mail">
+                  <font>
+                     <Font size="20.0"/>
+                  </font>
+               </Label>
+               <TextField fx:id="studentMailTextField"/>
+            </VBox>
+            <VBox>
+               <Label text="Student Code">
+                  <font>
+                     <Font size="20.0"/>
+                  </font>
+               </Label>
+               <TextField fx:id="studentCodeTextField"/>
+            </VBox>
+         </HBox>
          <Label fx:id="priceLabel">
             <font>
                <Font size="20.0"/>

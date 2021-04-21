@@ -185,6 +185,11 @@ public class DbManager {
         return true;
     }
 
+    public boolean checkStudent(int id, String email) {
+        // Simulated
+        return true;
+    }
+
     public boolean returnBike(Grip grip, int bikeId) {
         try {
 
