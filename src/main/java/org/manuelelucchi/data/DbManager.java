@@ -95,7 +95,7 @@ public class DbManager {
             Subscription subscription = new Subscription(password, type, isStudent);
             Card card = new Card(cardCode, cardExpireDate);
 
-            if (card.pay(subscription.getCost())) {
+            if (CardManager.getInstance().pay(card, subscription.getCost())) {
                 subscription.setCard(card);
                 if (type == SubscriptionType.year) {
                     subscription.activate();
@@ -147,7 +147,7 @@ public class DbManager {
             Rental rental = new Rental(totem, subscription, bike);
             rentals.create(rental);
 
-            // Invia segnale a controllore di aprire la morsa
+            GripManager.getInstance().unlockGrip(grip);
 
             return new Transaction(grip, rental);
         } catch (SQLException e) {
@@ -178,16 +178,6 @@ public class DbManager {
         } catch (Exception e) {
             return false;
         }
-    }
-
-    public boolean blockGrip(Grip grip) {
-        // Simulated
-        return true;
-    }
-
-    public boolean checkStudent(int id, String email) {
-        // Simulated
-        return true;
     }
 
     public boolean returnBike(Grip grip, int bikeId) {
@@ -223,11 +213,11 @@ public class DbManager {
 
             var duration = DateUtils.sub(start, end);
 
-            var amount = payAmount(subscription, bike, duration);
+            var amount = getPayAmount(subscription, bike, duration);
 
             var card = subscription.getCard();
 
-            boolean paySuccess = card.pay(amount);
+            boolean paySuccess = CardManager.getInstance().pay(card, amount);
 
             return paySuccess;
         } catch (SQLException e) {
@@ -235,7 +225,7 @@ public class DbManager {
         }
     }
 
-    public double payAmount(Subscription subscription, Bike bike, Duration duration) {
+    public double getPayAmount(Subscription subscription, Bike bike, Duration duration) {
         var minutes = duration.toMinutes();
         var halfHours = minutes / 30 + (minutes % 30 > 0 ? 1 : 0);
 

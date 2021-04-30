@@ -8,7 +8,9 @@ import java.util.Date;
 import org.manuelelucchi.App;
 import org.manuelelucchi.common.AlertUtils;
 import org.manuelelucchi.common.Controller;
+import org.manuelelucchi.data.CardManager;
 import org.manuelelucchi.data.DbManager;
+import org.manuelelucchi.data.StudentManager;
 import org.manuelelucchi.models.Subscription;
 import org.manuelelucchi.models.SubscriptionType;
 
@@ -39,6 +41,9 @@ public class RegistrationController extends Controller {
     public DatePicker expireDatePicker;
 
     @FXML
+    public TextField cvvField;
+
+    @FXML
     public ChoiceBox<SubscriptionType> typeBox;
 
     @FXML
@@ -65,14 +70,14 @@ public class RegistrationController extends Controller {
             @Override
             public String toString(SubscriptionType l) {
                 switch (l) {
-                case day:
-                    return "Day (€4,50)";
-                case week:
-                    return "Week (€9,00)";
-                case year:
-                    return "Year (€36,00)";
-                default:
-                    return "";
+                    case day:
+                        return "Day (€4,50)";
+                    case week:
+                        return "Week (€9,00)";
+                    case year:
+                        return "Year (€36,00)";
+                    default:
+                        return "";
                 }
             }
 
@@ -103,15 +108,15 @@ public class RegistrationController extends Controller {
             price = 0;
         } else {
             switch (type) {
-            case day:
-                price = 4.5;
-                break;
-            case week:
-                price = 9;
-                break;
-            case year:
-                price = 36;
-                break;
+                case day:
+                    price = 4.5;
+                    break;
+                case week:
+                    price = 9;
+                    break;
+                case year:
+                    price = 36;
+                    break;
             }
         }
         priceLabel.setText("Current Total: " + price + "€");
@@ -130,7 +135,7 @@ public class RegistrationController extends Controller {
         } catch (Exception e) {
             return false;
         }
-        return DbManager.getInstance().checkStudent(id, email);
+        return StudentManager.getInstance().isStudent(id, email);
     }
 
     @FXML
@@ -139,13 +144,37 @@ public class RegistrationController extends Controller {
         var password = passwordField.getText();
         var type = typeBox.getSelectionModel().getSelectedItem();
         var isStudent = studentBox.isSelected();
+
+        int cardCode;
+        try {
+            cardCode = Integer.parseInt(codeField.getText());
+        } catch (NumberFormatException e) {
+            AlertUtils.showError("Card code is not valid");
+            return;
+        }
+
+        int cardCVV;
+        try {
+            cardCVV = Integer.parseInt(cvvField.getText());
+            if (cardCVV > 999 || cardCVV < 100) {
+                throw new Exception();
+            }
+        } catch (Exception e) {
+            AlertUtils.showError("Card CVV is not valid");
+            return;
+        }
+
+        Date cardExpireDate = Date.from(expireDatePicker.getValue().atStartOfDay(ZoneId.systemDefault()).toInstant());
+
+        if (!CardManager.getInstance().isValidCard(cardCode, cardExpireDate, cardCVV, type)) {
+            AlertUtils.showError("Card not invalid or will expire before the end of the subscription");
+        }
+
         if (isStudent && !checkStudent()) {
             AlertUtils.showError("Student data is invalid");
             return;
         }
 
-        var cardCode = Integer.parseInt(codeField.getText());
-        Date cardExpireDate = Date.from(expireDatePicker.getValue().atStartOfDay(ZoneId.systemDefault()).toInstant());
         Subscription subscription = db.register(password, type, isStudent, cardCode, cardExpireDate);
         if (subscription != null) {
             navigate("CodeView", subscription);

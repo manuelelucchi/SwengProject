@@ -5,6 +5,7 @@ import java.util.stream.Collectors;
 import org.manuelelucchi.common.AlertUtils;
 import org.manuelelucchi.common.Controller;
 import org.manuelelucchi.data.DbManager;
+import org.manuelelucchi.data.GripManager;
 import org.manuelelucchi.models.Grip;
 import org.manuelelucchi.models.Totem;
 
@@ -105,6 +106,7 @@ public class HomeController extends Controller {
         try {
             int bikeId = Integer.parseInt(bikeField.getText());
             if (DbManager.getInstance().returnBike(gripsBox.getValue(), bikeId)) {
+                GripManager.getInstance().blockGrip(gripsBox.getValue());
                 AlertUtils.showInfo("Bike successfully returned");
             } else {
                 AlertUtils.showError("Error you inserted an invalid bike");

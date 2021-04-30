@@ -31,11 +31,6 @@ public class Card {
         return expireDate;
     }
 
-    public boolean pay(double amount) {
-        // Simulated
-        return true;
-    }
-
     @ForeignCollectionField
     private ForeignCollection<Subscription> subscriptions;
 
