@@ -17,6 +17,18 @@ public class DateUtils {
         return calendar.getTime();
     }
 
+    public static Date oneDay() {
+        var calendar = Calendar.getInstance();
+        calendar.add(Calendar.DAY_OF_MONTH, 1);
+        return calendar.getTime();
+    }
+
+    public static Date oneWeek() {
+        var calendar = Calendar.getInstance();
+        calendar.add(Calendar.WEEK_OF_YEAR, 1);
+        return calendar.getTime();
+    }
+
     public static Duration sub(Date start, Date end) {
         return Duration.ofMillis(end.getTime() - start.getTime());
     }

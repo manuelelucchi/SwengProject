@@ -2,6 +2,7 @@ package org.manuelelucchi.controllers;
 
 import org.manuelelucchi.common.AlertUtils;
 import org.manuelelucchi.common.Controller;
+import org.manuelelucchi.common.DateUtils;
 import org.manuelelucchi.data.DbManager;
 import org.manuelelucchi.models.BikeType;
 import org.manuelelucchi.models.Subscription;
@@ -87,10 +88,10 @@ public class BikeController extends Controller {
         if (isAdmin)
             return "nothing";
         switch (type) {
-        case standard:
-            return "0.5€ per half hour after the first one";
-        default:
-            return "0.25€ the first half hour and doubling going on";
+            case standard:
+                return "0.5€ per half hour after the first one";
+            default:
+                return "0.25€ the first half hour and doubling going on";
         }
     }
 
@@ -107,6 +108,13 @@ public class BikeController extends Controller {
 
     @FXML
     public void confirm() {
+        var last = db.getLastRental(subscription);
+
+        if (last != null && last.getEnd() != null
+                && last.getEnd().getTime() + 5 * 60 * 100 < DateUtils.now().getTime()) {
+            AlertUtils.showError("You can't rent before 5 minutes from the last rent");
+            return;
+        }
         type = getSelectedType();
         Transaction t = db.unlockBike(getTotemId(), subscription, type);
         if (t != null) {

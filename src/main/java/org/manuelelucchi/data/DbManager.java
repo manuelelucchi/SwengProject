@@ -225,6 +225,37 @@ public class DbManager {
         }
     }
 
+    public Rental getLastRental(Subscription subscription) {
+        try {
+            subscriptions.refresh(subscription);
+            var sorted = subscription.getRentals().stream().sorted(new Comparator<Rental>() {
+                @Override
+                public int compare(Rental o1, Rental o2) {
+                    var end1 = o1.getEnd();
+                    var end2 = o2.getEnd();
+
+                    if (end1 == null) {
+                        return -1;
+                    } else if (end2 == null) {
+                        return 1;
+                    } else {
+                        return end1.compareTo(end2);
+                    }
+                }
+
+            });
+
+            var first = sorted.findFirst();
+            if (first.isPresent()) {
+                return first.get();
+            } else {
+                return null;
+            }
+        } catch (Exception e) {
+            return null;
+        }
+    }
+
     public double getPayAmount(Subscription subscription, Bike bike, Duration duration) {
         var minutes = duration.toMinutes();
         var halfHours = minutes / 30 + (minutes % 30 > 0 ? 1 : 0);

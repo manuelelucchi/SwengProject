@@ -2,6 +2,7 @@ package org.manuelelucchi.data;
 
 import java.util.Date;
 
+import org.manuelelucchi.common.DateUtils;
 import org.manuelelucchi.models.Card;
 import org.manuelelucchi.models.SubscriptionType;
 
@@ -19,7 +20,24 @@ public class CardManager {
     }
 
     public boolean isValidCard(int number, Date expireDate, int cvv, SubscriptionType type) {
-        return true; // Simulated
+        var isValid = true; // Simulated
+        boolean isExpired;
+
+        switch (type) {
+            case day:
+                isExpired = DateUtils.oneDay().getTime() > expireDate.getTime();
+                break;
+            case week:
+                isExpired = DateUtils.oneWeek().getTime() > expireDate.getTime();
+                break;
+            case year:
+                isExpired = DateUtils.oneYear().getTime() > expireDate.getTime();
+                break;
+            default:
+                isExpired = true;
+        }
+
+        return isValid && !isExpired;
     }
 
     public boolean pay(Card card, double amount) {
