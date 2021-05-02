@@ -19,7 +19,7 @@ public class CardManager {
         return _instance;
     }
 
-    public boolean isValidCard(int number, Date expireDate, int cvv, SubscriptionType type) {
+    public boolean isValidCard(long number, Date expireDate, int cvv, SubscriptionType type) {
         var isValid = true; // Simulated
         boolean isExpired;
 

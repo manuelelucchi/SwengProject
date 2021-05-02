@@ -12,8 +12,9 @@ public class Card {
     public Card() {
     }
 
-    public Card(long code, Date expirDate) {
+    public Card(long code, long cvv, Date expirDate) {
         this.code = code;
+        this.cvv = cvv;
         this.expireDate = expirDate;
     }
 
@@ -22,6 +23,13 @@ public class Card {
 
     public long getCode() {
         return code;
+    }
+
+    @DatabaseField
+    private long cvv;
+
+    public long getCvv() {
+        return cvv;
     }
 
     @DatabaseField

@@ -89,11 +89,11 @@ public class DbManager {
         }
     }
 
-    public Subscription register(String password, SubscriptionType type, boolean isStudent, int cardCode,
-            Date cardExpireDate) {
+    public Subscription register(String password, SubscriptionType type, boolean isStudent, long cardCode,
+            Date cardExpireDate, int cvv) {
         try {
             Subscription subscription = new Subscription(password, type, isStudent);
-            Card card = new Card(cardCode, cardExpireDate);
+            Card card = new Card(cardCode, cvv, cardExpireDate);
 
             if (CardManager.getInstance().pay(card, subscription.getCost())) {
                 subscription.setCard(card);
@@ -115,6 +115,10 @@ public class DbManager {
     public Subscription login(int code, String password) {
         try {
             var subscription = subscriptions.queryForId(code);
+            if(subscription == null)
+            {
+                return null;
+            }
             return subscription.getPassword().equals(password) ? subscription : null;
         } catch (SQLException e) {
             return null;
@@ -375,6 +379,14 @@ public class DbManager {
         }
     }
 
+    public Totem getTotem(int id) {
+        try {
+            return totems.queryForId(id);
+        } catch (SQLException e) {
+            return null;
+        }
+    }
+
     public List<Grip> getGrips(Totem totem) {
         try {
             totems.update(totem);
@@ -526,7 +538,7 @@ public class DbManager {
         bikes.update(b2);
         bikes.update(b3);
 
-        Card card = new Card(1, DateUtils.oneYear());
+        Card card = new Card(1, 444, DateUtils.oneYear());
 
         cards.create(card);
 

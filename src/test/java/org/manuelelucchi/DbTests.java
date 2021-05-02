@@ -39,7 +39,7 @@ public class DbTests {
     @DisplayName("Test Register")
     @Test
     void testRegister() {
-        assertNotNull(db.register("psd", SubscriptionType.day, false, 12345, DateUtils.oneYear()));
+        assertNotNull(db.register("psd", SubscriptionType.day, false, 12345, DateUtils.oneYear(), 444));
     }
 
     @DisplayName("Test Report")

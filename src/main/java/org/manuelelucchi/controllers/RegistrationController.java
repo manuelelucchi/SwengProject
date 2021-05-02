@@ -122,6 +122,11 @@ public class RegistrationController extends Controller {
         priceLabel.setText("Current Total: " + price + "€");
     }
 
+    static boolean isValidEmail(String email) {
+        String regex = "^[\\w-_\\.+]*[\\w-_\\.]\\@([\\w]+\\.)+[\\w]+[\\w]$";
+        return email.matches(regex);
+     }
+
     @FXML
     public void typeBoxChanged() {
         updatePrice();
@@ -135,6 +140,10 @@ public class RegistrationController extends Controller {
         } catch (Exception e) {
             return false;
         }
+        if(!isValidEmail(email))
+        {
+            return false;
+        }
         return StudentManager.getInstance().isStudent(id, email);
     }
 
@@ -145,9 +154,11 @@ public class RegistrationController extends Controller {
         var type = typeBox.getSelectionModel().getSelectedItem();
         var isStudent = studentBox.isSelected();
 
-        int cardCode;
+
+
+        long cardCode;
         try {
-            cardCode = Integer.parseInt(codeField.getText());
+            cardCode = Long.parseLong(codeField.getText());
         } catch (NumberFormatException e) {
             AlertUtils.showError("Card code is not valid");
             return;
@@ -168,6 +179,7 @@ public class RegistrationController extends Controller {
 
         if (!CardManager.getInstance().isValidCard(cardCode, cardExpireDate, cardCVV, type)) {
             AlertUtils.showError("Card not invalid or will expire before the end of the subscription");
+            return;
         }
 
         if (isStudent && !checkStudent()) {
@@ -175,7 +187,7 @@ public class RegistrationController extends Controller {
             return;
         }
 
-        Subscription subscription = db.register(password, type, isStudent, cardCode, cardExpireDate);
+        Subscription subscription = db.register(password, type, isStudent, cardCode, cardExpireDate, cardCVV);
         if (subscription != null) {
             navigate("CodeView", subscription);
         } else {

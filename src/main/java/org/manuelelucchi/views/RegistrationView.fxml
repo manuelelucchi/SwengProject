@@ -33,7 +33,7 @@
          alignment="CENTER">
          <GridPane alignment="CENTER">
             <VBox GridPane.rowIndex="0" GridPane.columnIndex="0" spacing="10.0">
-               <Label text="Insert Password" >
+               <Label alignment="CENTER" text="Insert Password" >
                   <font>
                      <Font size="20.0"/>
                   </font>
@@ -50,7 +50,7 @@
                </padding>
             </VBox>
             <VBox GridPane.rowIndex="0" GridPane.columnIndex="1" spacing="10.0">
-               <Label text="Select the subscription type">
+               <Label alignment="CENTER" text="Select the subscription type">
                   <font>
                      <Font size="20.0"/>
                   </font>
@@ -65,7 +65,7 @@
                </padding>
             </VBox>
             <VBox GridPane.rowIndex="1" GridPane.columnIndex="0" spacing="10.0">
-               <Label text="Insert a valid Card Code">
+               <Label alignment="CENTER" text="Insert a valid Card Code">
                   <font>
                      <Font size="20.0"/>
                   </font>
@@ -82,7 +82,7 @@
                </padding>
             </VBox>
             <VBox GridPane.rowIndex="1" GridPane.columnIndex="1" spacing="10.0">
-               <Label text="Insert the card expiration Date">
+               <Label alignment="CENTER" text="Insert the card expiration Date">
                   <font>
                      <Font size="20.0"/>
                   </font>
@@ -95,7 +95,21 @@
                   <Insets bottom="0.0" left="0.0" right="0.0" top="10.0" />
                </padding>
             </VBox>
-         </GridPane>      
+         </GridPane>
+         <VBox alignment="CENTER" spacing="10.0">
+            <Label text="Insert the card CVV">
+               <font>
+                  <Font size="20.0"/>
+               </font>
+            </Label>
+            <TextField fx:id="cvvField" 
+               maxWidth="250"
+               prefHeight="40">
+               <font>
+                  <Font size="20.0"/>
+               </font>
+            </TextField>
+         </VBox>      
          <HBox spacing="10.0" alignment="CENTER">
             <Label text="Are you a student?">
                <font>
@@ -104,14 +118,20 @@
             </Label>
             <CheckBox fx:id="studentBox"/>              
          </HBox> 
-         <HBox>
+         <HBox spacing="10.0" alignment="CENTER">
             <VBox>
                <Label text="Student E-Mail">
                   <font>
                      <Font size="20.0"/>
                   </font>
                </Label>
-               <TextField fx:id="studentMailTextField"/>
+               <TextField fx:id="studentMailTextField"
+                  maxWidth="250"
+                  prefHeight="40">
+                  <font>
+                     <Font size="20.0"/>
+                  </font>
+               </TextField>
             </VBox>
             <VBox>
                <Label text="Student Code">
@@ -119,7 +139,13 @@
                      <Font size="20.0"/>
                   </font>
                </Label>
-               <TextField fx:id="studentCodeTextField"/>
+               <TextField fx:id="studentCodeTextField"
+                  maxWidth="250"
+                  prefHeight="40">
+                  <font>
+                     <Font size="20.0"/>
+                  </font>
+               </TextField>
             </VBox>
          </HBox>
          <Label fx:id="priceLabel">

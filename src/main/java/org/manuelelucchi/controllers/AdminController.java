@@ -25,9 +25,6 @@ public class AdminController extends Controller {
     private DbManager manager = DbManager.getInstance();
 
     @FXML
-    public ChoiceBox<Totem> totemChoiceBox;
-
-    @FXML
     public ChoiceBox<Grip> gripsChoiceBox;
 
     @FXML
@@ -58,26 +55,6 @@ public class AdminController extends Controller {
 
     @Override
     public void init() {
-        totemChoiceBox.getItems().addAll(manager.getTotems());
-        totemChoiceBox.setConverter(new StringConverter<Totem>() {
-            @Override
-            public String toString(Totem l) {
-                return l.getAddress();
-            }
-
-            @Override
-            public Totem fromString(String language) {
-                throw new IllegalAccessError();
-            }
-        });
-        totemChoiceBox.getSelectionModel().selectFirst();
-        totemChoiceBox.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<Totem>() {
-            @Override
-            public void changed(ObservableValue<? extends Totem> arg0, Totem arg1, Totem arg2) {
-                updateGrips();
-            }
-        });
-
         gripsChoiceBox.setConverter(new StringConverter<Grip>() {
             @Override
             public String toString(Grip l) {
@@ -149,7 +126,7 @@ public class AdminController extends Controller {
     }
 
     private Totem getTotem() {
-        return totemChoiceBox.getSelectionModel().getSelectedItem();
+        return manager.getTotem(getTotemId());
     }
 
     private Bike getBike() {

@@ -103,7 +103,7 @@ public class Subscription {
             return false;
         }
         var actualTime = DateUtils.now();
-        var difference = actualTime.getTime() - startTime.getTime() - getTime().toMillis();
+        var difference = actualTime.getTime() - startTime.getTime() + getTime().toMillis();
         return difference <= 0;
     }
 
