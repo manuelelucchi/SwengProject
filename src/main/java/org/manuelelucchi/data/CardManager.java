@@ -19,6 +19,9 @@ public class CardManager {
         return _instance;
     }
 
+    // @requires expireDate != null
+    // @requires cvv > 100
+    // @requires cvv < 999
     public boolean isValidCard(long number, Date expireDate, int cvv, SubscriptionType type) {
         var isValid = true; // Simulated
         boolean isExpired;
@@ -40,6 +43,8 @@ public class CardManager {
         return isValid && !isExpired;
     }
 
+    // @requires card != null
+    // @requires amount >0
     public boolean pay(Card card, double amount) {
         return true;
     }

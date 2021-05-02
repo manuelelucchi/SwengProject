@@ -89,6 +89,9 @@ public class DbManager {
         }
     }
 
+    // @requires type != null
+    // @requires password != null
+    // @requires cardExpireDate != null
     public Subscription register(String password, SubscriptionType type, boolean isStudent, long cardCode,
             Date cardExpireDate, int cvv) {
         try {
@@ -112,11 +115,11 @@ public class DbManager {
         }
     }
 
+    // @requires password != null
     public Subscription login(int code, String password) {
         try {
             var subscription = subscriptions.queryForId(code);
-            if(subscription == null)
-            {
+            if (subscription == null) {
                 return null;
             }
             return subscription.getPassword().equals(password) ? subscription : null;
@@ -175,6 +178,7 @@ public class DbManager {
         }
     }
 
+    // @requires rental != null
     public boolean bikeNotRemoved(Rental rental) {
         try {
             rentals.delete(rental);
@@ -330,6 +334,9 @@ public class DbManager {
         }
     }
 
+    // @requires t != null
+    // @requires t.getGrip() != null
+    // @requires t.getRental() != null
     public boolean transactionCanceled(Transaction t) {
         try {
             Rental rental = t.getRental();
@@ -405,9 +412,10 @@ public class DbManager {
         }
     }
 
+    // @requires totem != null
     public List<Bike> getBikes(Totem totem) {
         try {
-            totems.update(totem);
+            totems.refresh(totem);
             Collection<Grip> grips = totem.getGrips();
             List<Bike> b = grips.stream().map(g -> g.getBike()).filter(x -> x != null).collect(Collectors.toList());
             b.forEach(x -> {
