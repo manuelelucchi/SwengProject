@@ -63,8 +63,6 @@ public class DbManager {
             rentals = DaoManager.createDao(source, Rental.class);
             totems = DaoManager.createDao(source, Totem.class);
 
-            createFakeData();
-
             return true;
         } catch (SQLException e) {
             return false;
@@ -92,7 +90,7 @@ public class DbManager {
     // @requires type != null
     // @requires password != null
     // @requires cardExpireDate != null
-    public Subscription register(String password, SubscriptionType type, boolean isStudent, long cardCode,
+    public Subscription register(String password, SubscriptionType type, boolean isStudent, String cardCode,
             Date cardExpireDate, int cvv) {
         try {
             Subscription subscription = new Subscription(password, type, isStudent);
@@ -499,71 +497,75 @@ public class DbManager {
         }
     }
 
-    public void createFakeData() throws SQLException {
+    public void createFakeData() {
+        try {
 
-        Totem t1 = new Totem("Via Adios 14", 0, 0);
-        Totem t2 = new Totem("Via Vamos 12", 1, 2);
+            Totem t1 = new Totem("Via Adios 14", 0, 0);
+            Totem t2 = new Totem("Via Vamos 12", 1, 2);
 
-        totems.create(t1);
-        totems.create(t2);
+            totems.create(t1);
+            totems.create(t2);
 
-        Grip g11 = new Grip(t1, BikeType.standard, 0);
-        Grip g12 = new Grip(t1, BikeType.electric, 1);
-        Grip g13 = new Grip(t1, BikeType.electricBabySeat, 2);
+            Grip g11 = new Grip(t1, BikeType.standard, 0);
+            Grip g12 = new Grip(t1, BikeType.electric, 1);
+            Grip g13 = new Grip(t1, BikeType.electricBabySeat, 2);
 
-        Grip g21 = new Grip(t2, BikeType.standard, 0);
-        Grip g22 = new Grip(t2, BikeType.electric, 1);
-        Grip g23 = new Grip(t2, BikeType.electricBabySeat, 2);
+            Grip g21 = new Grip(t2, BikeType.standard, 0);
+            Grip g22 = new Grip(t2, BikeType.electric, 1);
+            Grip g23 = new Grip(t2, BikeType.electricBabySeat, 2);
 
-        Bike b1 = new Bike(BikeType.standard);
-        Bike b2 = new Bike(BikeType.electric);
-        Bike b3 = new Bike(BikeType.electricBabySeat);
+            Bike b1 = new Bike(BikeType.standard);
+            Bike b2 = new Bike(BikeType.electric);
+            Bike b3 = new Bike(BikeType.electricBabySeat);
 
-        bikes.create(b1);
-        bikes.create(b2);
-        bikes.create(b3);
+            bikes.create(b1);
+            bikes.create(b2);
+            bikes.create(b3);
 
-        grips.create(g11);
-        grips.create(g12);
-        grips.create(g13);
-        grips.create(g21);
-        grips.create(g22);
-        grips.create(g23);
+            grips.create(g11);
+            grips.create(g12);
+            grips.create(g13);
+            grips.create(g21);
+            grips.create(g22);
+            grips.create(g23);
 
-        g11.setBike(b1);
-        g12.setBike(b2);
-        g13.setBike(b3);
+            g11.setBike(b1);
+            g12.setBike(b2);
+            g13.setBike(b3);
 
-        b1.setGrip(g11);
-        b2.setGrip(g12);
-        b3.setGrip(g13);
+            b1.setGrip(g11);
+            b2.setGrip(g12);
+            b3.setGrip(g13);
 
-        grips.update(g11);
-        grips.update(g12);
-        grips.update(g13);
+            grips.update(g11);
+            grips.update(g12);
+            grips.update(g13);
 
-        bikes.update(b1);
-        bikes.update(b2);
-        bikes.update(b3);
+            bikes.update(b1);
+            bikes.update(b2);
+            bikes.update(b3);
 
-        Card card = new Card(1, 444, DateUtils.oneYear());
+            Card card = new Card("1111111111111111", 444, DateUtils.oneYear());
 
-        cards.create(card);
+            cards.create(card);
 
-        Subscription admin = new Subscription("admin", SubscriptionType.admin, false);
-        Subscription normal = new Subscription("normal", SubscriptionType.week, false);
-        Subscription student = new Subscription("student", SubscriptionType.week, true);
-        Subscription expired = new Subscription("expired", SubscriptionType.day, true);
-        expired.setNumberOfExceed(3);
+            Subscription admin = new Subscription("admin", SubscriptionType.admin, false);
+            Subscription normal = new Subscription("normal", SubscriptionType.week, false);
+            Subscription student = new Subscription("student", SubscriptionType.week, true);
+            Subscription expired = new Subscription("expired", SubscriptionType.day, true);
+            expired.setNumberOfExceed(3);
 
-        admin.setCard(card);
-        normal.setCard(card);
-        student.setCard(card);
-        expired.setCard(card);
+            admin.setCard(card);
+            normal.setCard(card);
+            student.setCard(card);
+            expired.setCard(card);
 
-        subscriptions.create(admin);
-        subscriptions.create(normal);
-        subscriptions.create(student);
-        subscriptions.create(expired);
+            subscriptions.create(admin);
+            subscriptions.create(normal);
+            subscriptions.create(student);
+            subscriptions.create(expired);
+        } catch (SQLException e) {
+            System.out.println("Error");
+        }
     }
 }

@@ -12,16 +12,19 @@ public class Card {
     public Card() {
     }
 
-    public Card(long code, long cvv, Date expirDate) {
+    public Card(String code, long cvv, Date expirDate) {
         this.code = code;
         this.cvv = cvv;
         this.expireDate = expirDate;
     }
 
+    // @ \forall int i Character.isDigit(code.toCharArray()[i])
+    // @ invariant code.length = 16
     @DatabaseField(id = true)
-    private long code;
+    private String code;
 
-    public long getCode() {
+    // @ ensures code.length == 16
+    public String getCode() {
         return code;
     }
 

@@ -28,6 +28,8 @@ public class Subscription {
         return code;
     }
 
+    // @ invariant password.length > 4 && password.length < 20
+
     @DatabaseField
     private String password;
 
@@ -71,6 +73,7 @@ public class Subscription {
         this.card = card;
     }
 
+    // @ invariant numberOfExceed >=0 && numberOfExceed <= 3
     @DatabaseField
     private int numberOfExceed = 0;
 
@@ -78,6 +81,7 @@ public class Subscription {
         return numberOfExceed;
     }
 
+    // @ requires numberOfExceed >=0 && numberOfExceed <= 3
     public void setNumberOfExceed(int numberOfExceed) {
         this.numberOfExceed = numberOfExceed;
     }
@@ -108,32 +112,34 @@ public class Subscription {
     }
 
     public double getCost() {
+        if (isStudent)
+            return 0;
         switch (type) {
-        case day:
-            return 4.5;
-        case week:
-            return 9;
-        case year:
-            return 36;
-        case admin:
-            return 0;
-        default:
-            return 0;
+            case day:
+                return 4.5;
+            case week:
+                return 9;
+            case year:
+                return 36;
+            case admin:
+                return 0;
+            default:
+                return 0;
         }
     }
 
     public Duration getTime() {
         switch (type) {
-        case day:
-            return Duration.ofDays(1);
-        case week:
-            return Duration.ofDays(7);
-        case year:
-            return Duration.ofDays(365);
-        case admin:
-            return Duration.ofDays(1000);
-        default:
-            return Duration.ofDays(0);
+            case day:
+                return Duration.ofDays(1);
+            case week:
+                return Duration.ofDays(7);
+            case year:
+                return Duration.ofDays(365);
+            case admin:
+                return Duration.ofDays(1000);
+            default:
+                return Duration.ofDays(0);
         }
     }
 }

@@ -18,6 +18,7 @@ import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.ChoiceBox;
@@ -125,7 +126,7 @@ public class RegistrationController extends Controller {
     static boolean isValidEmail(String email) {
         String regex = "^[\\w-_\\.+]*[\\w-_\\.]\\@([\\w]+\\.)+[\\w]+[\\w]$";
         return email.matches(regex);
-     }
+    }
 
     @FXML
     public void typeBoxChanged() {
@@ -140,8 +141,7 @@ public class RegistrationController extends Controller {
         } catch (Exception e) {
             return false;
         }
-        if(!isValidEmail(email))
-        {
+        if (!isValidEmail(email)) {
             return false;
         }
         return StudentManager.getInstance().isStudent(id, email);
@@ -154,14 +154,27 @@ public class RegistrationController extends Controller {
         var type = typeBox.getSelectionModel().getSelectedItem();
         var isStudent = studentBox.isSelected();
 
+        if (password.length() < 4) {
+            AlertUtils.showError("Password too short");
+            return;
+        }
 
+        if (password.length() > 20) {
+            AlertUtils.showError("Password too long");
+            return;
+        }
 
-        long cardCode;
-        try {
-            cardCode = Long.parseLong(codeField.getText());
-        } catch (NumberFormatException e) {
+        String cardCode = codeField.getText();
+        if (cardCode.length() != 16) {
             AlertUtils.showError("Card code is not valid");
             return;
+        }
+
+        for (var c : cardCode.toCharArray()) {
+            if (!Character.isDigit(c)) {
+                AlertUtils.showError("Card code is not valid");
+                return;
+            }
         }
 
         int cardCVV;

@@ -29,9 +29,11 @@ public class Grip {
         return type;
     }
 
+    // @ invariant position >= 0
     @DatabaseField
     private int position;
 
+    // @ ensures position >= 0
     public int getPosition() {
         return position;
     }

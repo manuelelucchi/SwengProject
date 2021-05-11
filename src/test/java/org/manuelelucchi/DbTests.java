@@ -4,6 +4,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.manuelelucchi.common.DateUtils;
 import org.manuelelucchi.data.DbManager;
+import org.manuelelucchi.data.GripManager;
 import org.manuelelucchi.models.Subscription;
 import org.manuelelucchi.models.SubscriptionType;
 
@@ -12,6 +13,8 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.File;
+import java.util.stream.Collector;
+import java.util.stream.Collectors;
 
 import org.junit.jupiter.api.BeforeAll;
 
@@ -25,6 +28,7 @@ public class DbTests {
         file.delete();
 
         db.ensureCreated();
+        db.createFakeData();
     }
 
     @DisplayName("Test Login")
@@ -39,7 +43,7 @@ public class DbTests {
     @DisplayName("Test Register")
     @Test
     void testRegister() {
-        assertNotNull(db.register("psd", SubscriptionType.day, false, 12345, DateUtils.oneYear(), 444));
+        assertNotNull(db.register("psd", SubscriptionType.day, false, "1111111111111111", DateUtils.oneYear(), 444));
     }
 
     @DisplayName("Test Report")
@@ -53,5 +57,19 @@ public class DbTests {
     void testMakeOperative() {
 
         assertTrue(db.makeBikeOperative(db.getBikes(1).get(0)));
+    }
+
+    @DisplayName("Test Unlock Grip")
+    @Test
+    void testUnlockGrip() {
+        var grip = DbManager.getInstance().getTotem(1).getGrips().stream().collect(Collectors.toList()).get(0);
+        assertTrue(GripManager.getInstance().unlockGrip(grip));
+    }
+
+    @DisplayName("Test Block Grip")
+    @Test
+    void testBlckGrip() {
+        var grip = DbManager.getInstance().getTotem(1).getGrips().stream().collect(Collectors.toList()).get(0);
+        assertTrue(GripManager.getInstance().blockGrip(grip));
     }
 }

@@ -39,7 +39,7 @@ public class Totem {
     }
 
     @DatabaseField
-    private String address;
+    private /* @ non_null @ */ String address;
 
     public String getAddress() {
         return address;

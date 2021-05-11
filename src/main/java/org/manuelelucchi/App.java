@@ -32,8 +32,6 @@ public class App extends Application {
     @Override
     public void start(Stage stage) throws IOException {
         DbManager db = DbManager.getInstance();
-        File file = new File("./data.db");
-        file.delete();
 
         db.ensureCreated();
 
