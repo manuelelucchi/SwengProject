@@ -24,7 +24,7 @@ public class DomainTests {
 
         assertTrue(b1.getCost(1) == 0);
         assertTrue(b1.getCost(4) == 1.5);
-        assertTrue(b1.getCost(5) == 3.5);
+        assertTrue(b1.getCost(5) == 7.5);
 
         assertTrue(b2.getCost(1) == 0.25);
         assertTrue(b2.getCost(3) == 1);

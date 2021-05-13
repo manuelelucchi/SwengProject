@@ -118,7 +118,7 @@
             </Label>
             <CheckBox fx:id="studentBox"/>              
          </HBox> 
-         <HBox spacing="10.0" alignment="CENTER">
+         <HBox spacing="10.0" alignment="CENTER" fx:id="studentContainer">
             <VBox>
                <Label text="Student E-Mail">
                   <font>
