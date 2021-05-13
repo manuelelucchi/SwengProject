@@ -30,7 +30,7 @@
             </font>
         </Label>
 
-        <Label fx:id="codeLabel">
+        <Label fx:id="labelTotem">
             <font>
                 <Font size="40.0"/>
             </font>

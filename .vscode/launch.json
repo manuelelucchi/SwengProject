@@ -9,7 +9,7 @@
             "name": "Launch App",
             "request": "launch",
             "mainClass": "org.openjfx/org.manuelelucchi.App",
-            "projectName": "javafx-archetype-simple"
+            "projectName": "BikeSharing"
         }
     ]
 }

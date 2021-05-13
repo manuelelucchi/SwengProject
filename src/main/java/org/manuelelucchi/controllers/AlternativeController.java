@@ -8,6 +8,10 @@ import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 
 public class AlternativeController extends Controller {
+
+    @FXML
+    public Label labelTotem;
+
     @Override
     public void onNavigateFrom(Controller sender, Object parameter) {
         this.subscription = (Subscription) parameter;
@@ -17,14 +21,11 @@ public class AlternativeController extends Controller {
     public void init() {
         var totem = DbManager.getInstance().nearestTotem(getTotemId());
         if (totem != null) {
-            totemLabel.setText(totem.getAddress());
+            labelTotem.setText(totem.getAddress());
         } else {
-            totemLabel.setText("Error");
+            labelTotem.setText("Error");
         }
     }
-
-    @FXML
-    public Label totemLabel;
 
     private Subscription subscription;
 

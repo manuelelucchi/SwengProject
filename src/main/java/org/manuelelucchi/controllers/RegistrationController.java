@@ -26,6 +26,7 @@ import javafx.scene.control.DatePicker;
 import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
+import javafx.scene.layout.HBox;
 import javafx.util.StringConverter;
 
 public class RegistrationController extends Controller {
@@ -58,6 +59,9 @@ public class RegistrationController extends Controller {
 
     @FXML
     public Label priceLabel;
+
+    @FXML
+    public HBox studentContainer;
 
     @FXML
     public void back() {
@@ -95,11 +99,12 @@ public class RegistrationController extends Controller {
         studentBox.selectedProperty().addListener(new ChangeListener<Boolean>() {
             @Override
             public void changed(ObservableValue<? extends Boolean> arg0, Boolean arg1, Boolean arg2) {
-                studentMailTextField.setVisible(studentBox.isSelected());
-                studentCodeTextField.setVisible(studentBox.isSelected());
+                studentContainer.setVisible(studentBox.isSelected());
                 updatePrice();
             }
         });
+
+        studentContainer.setVisible(false);
     }
 
     public void updatePrice() {
