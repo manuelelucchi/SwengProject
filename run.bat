@@ -1,0 +1,1 @@
+java --module-path "target/lib" --add-modules=javafx.controls,javafx.fxml,javafx.graphics -jar target/BikeSharing-1.0.jar

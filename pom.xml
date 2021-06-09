@@ -10,6 +10,7 @@
         <maven.compiler.source>11</maven.compiler.source>
         <maven.compiler.target>11</maven.compiler.target>
     </properties>
+    
     <dependencies>
         <dependency>
             <groupId>org.openjfx</groupId>
@@ -44,6 +45,17 @@
         </dependency>
     </dependencies>
     <build>
+        <resources>
+            <resource>
+                <directory>src/main/resources</directory>
+            </resource>
+            <resource>
+                <directory>src/main/java</directory>
+                <includes>
+                <include>**/*.fxml</include>
+                </includes>
+            </resource>        
+        </resources>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -69,7 +81,7 @@
                     <manifest>
                         <addClasspath>true</addClasspath>
                         <mainClass>org.manuelelucchi.App</mainClass>
-                        <classpathPrefix>dependency-jars/</classpathPrefix>
+                        <classpathPrefix>lib/</classpathPrefix>
                     </manifest>
                   </archive>
                 </configuration>
@@ -88,7 +100,7 @@
                     <configuration>
                       <!-- exclude junit, we need runtime dependency only -->
                       <includeScope>runtime</includeScope>
-                      <outputDirectory>${project.build.directory}/dependency-jars/</outputDirectory>
+                      <outputDirectory>${project.build.directory}/lib/</outputDirectory>
                     </configuration>
                   </execution>
                 </executions>
