@@ -17,7 +17,7 @@ public class PositionController extends Controller {
     public void init() {
         var grip = transaction.getGrip();
 
-        codeLabel.setText("" + grip.getPosition());
+        codeLabel.setText("You can retire the bike number " + transaction.getRental().getBike().getId() + " at the grip number " + grip.getPosition());
     }
 
     private Transaction transaction;

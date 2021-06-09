@@ -110,11 +110,17 @@ public class BikeController extends Controller {
     public void confirm() {
         var last = db.getLastRental(subscription);
 
-        if (last != null && last.getEnd() != null
-                && last.getEnd().getTime() + 5 * 60 * 100 < DateUtils.now().getTime()) {
-            AlertUtils.showError("You can't rent before 5 minutes from the last rent");
-            return;
+        if(last != null && last.getEnd() != null)
+        {
+            var lastPlusFive = last.getEnd().getTime() + 5 * 60 * 1000;
+            var now = DateUtils.now().getTime();
+            if(lastPlusFive > now) 
+            {
+                AlertUtils.showError("You can't rent before 5 minutes from the last rent");
+                return;
+            }
         }
+
         type = getSelectedType();
         Transaction t = db.unlockBike(getTotemId(), subscription, type);
         if (t != null) {

@@ -2,6 +2,7 @@ package org.manuelelucchi.controllers;
 
 import java.util.stream.Collectors;
 
+import org.manuelelucchi.App;
 import org.manuelelucchi.common.AlertUtils;
 import org.manuelelucchi.common.Controller;
 import org.manuelelucchi.data.DbManager;
@@ -34,7 +35,16 @@ public class HomeController extends Controller {
                 throw new IllegalAccessError();
             }
         });
-        totemChoiceBox.getSelectionModel().selectFirst();
+
+        if(isFirstHomeLoad())
+        {
+            totemChoiceBox.getSelectionModel().selectFirst();
+            setTotemId(totemChoiceBox.getItems().get(0).getId());
+        }
+        else 
+        {
+            totemChoiceBox.getItems().filtered(x -> x.getId() == getTotemId()).get(0);
+        }
 
         gripsBox.setConverter(new StringConverter<Grip>() {
             @Override
@@ -107,14 +117,13 @@ public class HomeController extends Controller {
             int bikeId = Integer.parseInt(bikeField.getText());
             if (DbManager.getInstance().returnBike(gripsBox.getValue(), bikeId)) {
                 GripManager.getInstance().blockGrip(gripsBox.getValue());
+                updateGrips();
                 AlertUtils.showInfo("Bike successfully returned");
             } else {
                 AlertUtils.showError("Error you inserted an invalid bike");
             }
-        } catch (NumberFormatException e) {
+        } catch (Exception e) {
             AlertUtils.showError("Insert a valid number");
-        } catch (IllegalArgumentException e) {
-            AlertUtils.showError("Error");
         }
     }
 }

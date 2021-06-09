@@ -33,7 +33,6 @@ public class LoginController extends Controller {
         Subscription subscription = db.login(Integer.parseInt(code), password);
         if (subscription == null) {
             AlertUtils.showError("You are not subscribed or wrong password");
-            navigate("RegistrationView");
         } else if (subscription.isExpired()) {
             AlertUtils.showError("Your subscription is expired or blocked");
             navigate("RegistrationView");

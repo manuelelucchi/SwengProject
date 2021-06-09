@@ -18,15 +18,9 @@
             <Font size="40.0"/>
          </font>
       </Label>
-      <Label text="You can retire your bike from the grip number">
-         <font>
-            <Font size="20.0"/>
-         </font>
-      </Label>
-
       <Label fx:id="codeLabel">
          <font>
-            <Font size="40.0"/>
+            <Font size="30.0"/>
          </font>
       </Label>
 

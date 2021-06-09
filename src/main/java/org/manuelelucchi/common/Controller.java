@@ -23,6 +23,10 @@ public abstract class Controller {
         App.setTotemId(id);
     }
 
+    public boolean isFirstHomeLoad() {
+        return !App.homeLoaded;
+    }
+
     public void navigate(String view, Object parameter) {
         try {
             App.navigate(this, view, parameter);

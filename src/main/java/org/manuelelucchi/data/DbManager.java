@@ -141,13 +141,17 @@ public class DbManager {
             if (totem == null) {
                 // Panic
             }
-            var grips = totem.getGrips();
-            var maybeGrip = grips.stream().filter(x -> x.getType() == type && x.getBike() != null).findFirst();
+            var _grips = totem.getGrips();
+            var maybeGrip = _grips.stream().filter(x -> x.getType() == type && x.getBike() != null).findFirst();
             if (!maybeGrip.isPresent()) {
                 return null;
             }
             var grip = maybeGrip.get();
+            grips.refresh(grip);
             var bike = grip.getBike();
+            grip.setBike(null);;
+
+            grips.update(grip);
 
             Rental rental = new Rental(totem, subscription, bike);
             rentals.create(rental);
@@ -359,8 +363,8 @@ public class DbManager {
             Totem totem = totems.queryForId(fromId);
 
             List<Totem> t = totems.queryForAll();
-            t.remove(totem);
-            var s = t.stream().min(new Comparator<Totem>() {
+
+            var s = t.stream().filter(x -> x.getId() != fromId).min(new Comparator<Totem>() {
                 public int compare(Totem o1, Totem o2) {
                     var v1 = Math.sqrt(Math.pow(Math.abs(o1.getX() - totem.getX()), 2)
                             + Math.pow(Math.abs(o1.getY() - totem.getY()), 2));

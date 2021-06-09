@@ -21,6 +21,8 @@ public class App extends Application {
 
     private static int totemId = 1;
 
+    public static boolean homeLoaded;
+
     public static int getTotemId() {
         return totemId;
     }
@@ -42,6 +44,7 @@ public class App extends Application {
         stage.setMinWidth(900);
         stage.setMinHeight(600);
         stage.show();
+        homeLoaded = true;
     }
 
     public static Parent loadView(String view) throws IOException {
