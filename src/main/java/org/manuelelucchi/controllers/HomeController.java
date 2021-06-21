@@ -43,7 +43,9 @@ public class HomeController extends Controller {
         }
         else 
         {
-            totemChoiceBox.getItems().filtered(x -> x.getId() == getTotemId()).get(0);
+            var totem = totemChoiceBox.getItems().filtered(x -> x.getId() == getTotemId()).get(0);
+            totemChoiceBox.getSelectionModel().select(totem);
+            setTotemId(totem.getId());
         }
 
         gripsBox.setConverter(new StringConverter<Grip>() {
@@ -81,7 +83,8 @@ public class HomeController extends Controller {
 
     private void updateGrips() {
         gripsBox.getItems().clear();
-        var grips = DbManager.getInstance().getGrips(totemChoiceBox.getValue()).stream()
+        var totem = totemChoiceBox.getValue();
+        var grips = DbManager.getInstance().getGrips(totem).stream()
                 .filter(x -> x.getBike() == null).collect(Collectors.toList());
         gripsBox.getItems().addAll(grips);
         gripsBox.getSelectionModel().selectFirst();

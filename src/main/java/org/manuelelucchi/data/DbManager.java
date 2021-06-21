@@ -149,8 +149,11 @@ public class DbManager {
             var grip = maybeGrip.get();
             grips.refresh(grip);
             var bike = grip.getBike();
-            grip.setBike(null);;
+            grip.setBike(null);
+            bikes.refresh(bike);
+            bike.setGrip(null);
 
+            bikes.update(bike);
             grips.update(grip);
 
             Rental rental = new Rental(totem, subscription, bike);
